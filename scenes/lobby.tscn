@@ -13,9 +13,6 @@ margin_bottom = -1.85803
 size_flags_horizontal = 2
 size_flags_vertical = 2
 script = ExtResource( 1 )
-__meta__ = {
-"_edit_use_anchors_": false
-}
 
 [node name="connect" type="Panel" parent="."]
 anchor_left = 0.5
@@ -26,9 +23,6 @@ margin_left = -150.5
 margin_top = -61.0
 margin_right = 150.5
 margin_bottom = 61.0
-__meta__ = {
-"_edit_use_anchors_": false
-}
 
 [node name="v_box_container" type="VBoxContainer" parent="connect"]
 anchor_right = 1.0
@@ -109,7 +103,7 @@ anchor_left = 1.0
 anchor_right = 1.0
 anchor_bottom = 1.0
 margin_left = -280.0
-margin_bottom = 6.10352e-005
+margin_bottom = 6.10352e-05
 script = ExtResource( 2 )
 __meta__ = {
 "_edit_use_anchors_": false
@@ -217,6 +211,7 @@ margin_right = 41.5
 margin_bottom = 29.0
 size_flags_horizontal = 2
 size_flags_vertical = 2
+
 [connection signal="pressed" from="connect/v_box_container/h_box_container2/host" to="." method="_on_host_pressed"]
 [connection signal="pressed" from="connect/v_box_container/h_box_container4/join" to="." method="_on_join_pressed"]
 [connection signal="pressed" from="players/start" to="." method="_on_start_pressed"]

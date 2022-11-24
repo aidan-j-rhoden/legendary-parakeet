@@ -22,6 +22,7 @@ const SPRINT_ACCEL = 10
 const DEACCEL= 5
 const AIR_DEACCEL = 1
 const MAX_SLOPE_ANGLE = 40
+const AIM_HOLD_THRESHOLD = 0.4
 
 # Health
 var health setget set_health
@@ -30,6 +31,8 @@ var health setget set_health
 var is_grounded = false
 var is_sprinting = false
 var is_aiming = false
+var toggled_aim = false
+var aiming_timer = 0.0
 var is_dead = false
 var is_climbing = false
 var is_dancing = false
@@ -83,6 +86,7 @@ var vehicle
 
 # Weapons
 var equipped_weapon
+
 
 func _ready():
 	shape = get_node("shape")
@@ -142,8 +146,10 @@ func _ready():
 		camera.current = true
 		crosshair.visible = true
 
+
 func _init():
 	Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
+
 
 func _physics_process(delta):
 	if is_network_master():
@@ -152,7 +158,8 @@ func _physics_process(delta):
 			process_movement(delta)
 		rpc_unreliable("process_animations", is_in_vehicle, is_grounded, is_climbing, is_dancing, is_aiming, weapon_equipped, hvel.length(), camera_x_rot, camera_y_rot)
 		rpc("check_weapons")
-		
+
+
 func _input(event):
 	if event is InputEventMouseMotion and Input.get_mouse_mode() == Input.MOUSE_MODE_CAPTURED:
 		get_node("camera_base").rotate_y(-event.relative.x * CAMERA_ROTATION_SPEED)
@@ -160,6 +167,7 @@ func _input(event):
 		camera_x_rot = clamp(camera_x_rot + event.relative.y * CAMERA_ROTATION_SPEED, deg2rad(CAMERA_X_ROT_MIN), deg2rad(CAMERA_X_ROT_MAX))
 		camera_y_rot = clamp(camera_y_rot + event.relative.x * CAMERA_ROTATION_SPEED, deg2rad(CAMERA_X_ROT_MIN), deg2rad(CAMERA_X_ROT_MAX))
 		get_node("camera_base/rotation").rotation.x = camera_x_rot
+
 
 func process_input(delta):
 	# Walking
@@ -189,27 +197,27 @@ func process_input(delta):
 			is_sprinting = true
 		else:
 			is_sprinting = false
-	
+
 		# Jumping
 		if is_grounded:
 			if Input.is_action_just_pressed("jump"):
 				vel.y = JUMP_SPEED
-		
+
 		# Dancing
 		if is_grounded:
 			if Input.is_action_pressed("dance"):
 				is_dancing = true
 			if Input.is_action_just_released("dance"):
 				is_dancing = false
-		
+
 		# Enter vehicle
 		if Input.is_action_just_pressed("enter_vehicle"):
 			rpc("enter_vehicle")
-		
+
 		# Change weapon
 		if Input.is_action_just_released("next_weapon"):
 			rpc("toggle_weapon")
-		
+
 		# Dealing with weapons
 		if equipped_weapon != null:
 			if weapon_equipped:
@@ -219,22 +227,44 @@ func process_input(delta):
 					equipped_weapon.rpc("reload")
 				if Input.is_action_just_pressed("drop"):
 					equipped_weapon.rpc("drop")
-		
+
 		# Aiming
 		var camera_target = camera_target_initial
 		var crosshair_alpha = 0.0
 		var fov = fov_initial
-		if Input.is_action_pressed("rmb"):
-			camera_target.x = -1.25
-			crosshair_alpha = 1.0
-			fov = 60
-			is_aiming = true
-		if Input.is_action_just_released("rmb"):
-			is_aiming = false
+		
+		var current_aim = false
+		
+		if Input.is_action_just_released("rmb") and aiming_timer <= AIM_HOLD_THRESHOLD:
+			current_aim = true
+			toggled_aim = true
+		else:
+			current_aim = toggled_aim or Input.is_action_pressed("rmb")
+			if Input.is_action_just_pressed("rmb"):
+				toggled_aim = false
+		
+		if current_aim:
+			aiming_timer += delta
+		else:
+			aiming_timer = 0.0
+
+		#if Input.is_action_just_pressed("rmb"):
+		#	if not is_aiming:
+		#		aiming_timer = 0.0
+		#	else:
+		#		is_aiming = false
+		
+		if is_aiming != current_aim:
+			is_aiming = current_aim
+			if is_aiming:
+				camera_target.x = -1.25
+				crosshair_alpha = 1.0
+				fov = 60
+
 		target.transform.origin.x += (camera_target.x - target.transform.origin.x) * 0.15
 		crosshair.modulate.a += (crosshair_alpha - crosshair.modulate.a) * 0.15
 		camera.fov += (fov - camera.fov) * 0.15
-		
+
 		# Force
 		if is_aiming:
 			if !weapon_equipped:
@@ -251,7 +281,7 @@ func process_input(delta):
 								force_player.stream = force_shoot
 								force_player.play()
 								body.apply_impulse(Vector3(0, 0, 0), -camera.global_transform.basis.z.normalized() * THROW_FORCE)
-	
+
 	# Slow Mo
 	if Input.is_action_pressed("slowmo"):
 		Engine.time_scale = 0.25
@@ -261,14 +291,14 @@ func process_input(delta):
 		Engine.time_scale = 1
 		AudioServer.get_bus_effect(0, 0).pitch_scale = 1
 		AudioServer.set_bus_effect_enabled(0, 0, false)
-		
-	
+
 	# Cursor
 	if Input.is_action_just_pressed("ui_cancel"):
 		if Input.get_mouse_mode() == Input.MOUSE_MODE_VISIBLE:
 			Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
 		else:
 			Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)
+
 
 func process_movement(delta):
 	# Ground detection
