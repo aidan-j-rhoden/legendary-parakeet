@@ -248,18 +248,12 @@ func process_input(delta):
 		else:
 			aiming_timer = 0.0
 
-		#if Input.is_action_just_pressed("rmb"):
-		#	if not is_aiming:
-		#		aiming_timer = 0.0
-		#	else:
-		#		is_aiming = false
-		
 		if is_aiming != current_aim:
 			is_aiming = current_aim
-			if is_aiming:
-				camera_target.x = -1.25
-				crosshair_alpha = 1.0
-				fov = 60
+		if is_aiming and weapon_equipped:
+			camera_target.x = -1.25
+			crosshair_alpha = 1.0
+			fov = 60
 
 		target.transform.origin.x += (camera_target.x - target.transform.origin.x) * 0.15
 		crosshair.modulate.a += (crosshair_alpha - crosshair.modulate.a) * 0.15
