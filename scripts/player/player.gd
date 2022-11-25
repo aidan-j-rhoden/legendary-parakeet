@@ -158,6 +158,8 @@ func _physics_process(delta):
 			process_movement(delta)
 		rpc_unreliable("process_animations", is_in_vehicle, is_grounded, is_climbing, is_dancing, is_aiming, weapon_equipped, hvel.length(), camera_x_rot, camera_y_rot)
 		rpc("check_weapons")
+	if global_transform.origin.y < -12:
+		rpc("die")
 
 
 func _input(event):
@@ -372,6 +374,7 @@ func process_movement(delta):
 	# Network
 	rpc_unreliable("update_trans_rot", translation, rotation, shape.rotation)
 
+
 # Check for weapons
 remotesync func check_weapons():
 	var weapons = get_node("shape/cube/root/skeleton/bone_attachment/weapon").get_children()
@@ -379,6 +382,7 @@ remotesync func check_weapons():
 		equipped_weapon = weapons[0]
 	else:
 		equipped_weapon = null
+
 
 remotesync func toggle_weapon():
 	if equipped_weapon != null:
@@ -388,6 +392,7 @@ remotesync func toggle_weapon():
 		else:
 			weapon_equipped = true
 			get_node("shape/cube/root/skeleton/bone_attachment/weapon").visible = true
+
 
 # Entering vehicle
 remotesync func enter_vehicle():
@@ -418,7 +423,7 @@ remotesync func enter_vehicle():
 		main_scn.add_child(self)
 		shape.disabled = false
 		camera.translation = Vector3(0, 0, 2)
-		
+
 		global_transform.origin = vehicle.transform.origin + vehicle.transform.basis.x * 2 + vehicle.transform.basis.y * 1
 		shape.rotation.y = vehicle.transform.basis.get_euler().y
 		
@@ -429,6 +434,7 @@ remotesync func enter_vehicle():
 		is_in_vehicle = false
 		# Temporary
 		camera.clip_to_bodies = true
+
 
 # Animations
 remotesync func process_animations(is_in_vehicle, is_grounded, is_climbing, is_dancing, is_aiming, pistol_equipped, hvel_length, camera_x_rot, camera_y_rot):
@@ -453,9 +459,10 @@ remotesync func process_animations(is_in_vehicle, is_grounded, is_climbing, is_d
 			animation_tree["parameters/blend_tree/pistol_aim_dir_x_blend/blend_amount"] = -camera_x_rot
 			animation_tree["parameters/blend_tree/pistol_aim_dir_y_blend/blend_amount"] = camera_y_rot
 		else:
-			animation_tree["parameters/blend_tree/aim_blend/blend_amount"] = 1
-			animation_tree["parameters/blend_tree/aim_dir_x_blend/blend_amount"] = -camera_x_rot
-			animation_tree["parameters/blend_tree/aim_dir_y_blend/blend_amount"] = camera_y_rot
+			pass
+			#animation_tree["parameters/blend_tree/aim_blend/blend_amount"] = 1
+			#animation_tree["parameters/blend_tree/aim_dir_x_blend/blend_amount"] = -camera_x_rot
+			#animation_tree["parameters/blend_tree/aim_dir_y_blend/blend_amount"] = camera_y_rot
 	else:
 		if weapon_equipped:
 			animation_tree["parameters/blend_tree/pistol_aim_blend/blend_amount"] = 0
@@ -467,8 +474,10 @@ func set_is_climbing(value):
 	is_climbing = value
 	rpc("update_is_climbing", value)
 
+
 remotesync func update_is_climbing(value):
 	is_climbing = value
+
 
 # Sync position and rotation in the network
 puppet func update_trans_rot(pos, rot, shape_rot):
@@ -476,21 +485,24 @@ puppet func update_trans_rot(pos, rot, shape_rot):
 	rotation = rot
 	shape.rotation = shape_rot
 
+
 func play_random_footstep():
 	footsteps_player.unit_size = vel.length()
 	footsteps_player.stream = footsteps_concrete[randi() % footsteps_concrete.size()]
 	footsteps_player.play()
+
 
 remotesync func hurt(damage):
 	set_health(health - damage)
 	voice_player.stream = pain_sound
 	voice_player.play()
 
+
 remotesync func die():
 	if !is_dead:
 		hit_player.stream = body_splat
 		hit_player.play()
-		
+
 		# Gibs
 		visible = false
 		var gibs = gibs_scn.instance()
@@ -502,15 +514,18 @@ remotesync func die():
 		is_dead = true
 		get_node("timer_respawn").start()
 
+
 func set_health(value):
 	health = value
 	if health <= 0:
 		#die()
 		rpc("die")
 
+
 # Respawn
 func _on_timer_respawn_timeout():
 	rpc("respawn")
+
 
 remotesync func respawn():
 	is_dead = false

@@ -137,6 +137,9 @@ func _physics_process(delta):
 	if driver:
 		if is_network_master():
 			process_input(delta)
+	else:
+		throttle_val = 0.0
+		brake_val = 1.0
 	
 	if is_network_master():
 		rpc("process_other_stuff", delta)
@@ -260,27 +263,27 @@ func process_sounds():
 
 	engine_force = MAX_ENGINE_FORCE / gear_ratio[current_gear] * throttle_val
 	brake = brake_val * MAX_BRAKE_FORCE
-	
+
 	# Air
 	air_player.unit_size = lvl / 30
 	if !air_player.playing:
 		air_player.play()
-	
+
 	# Collisions
 	var bodies = get_colliding_bodies()
-	
+
 	# Smack player
 	if bodies.size() > 0 and abs(prev_lvl - lvl) > 5:
 		for b in bodies:
 			if b is Player:
 				b.rpc("die")
-	
+
 	if bodies.size() > 0 and abs(prev_lvl - lvl) > 0.5:
 		if !collision_player.playing:
 			collision_player.pitch_scale = randf() * 2 + 1
 			collision_player.stream = collision_sound[randi() % collision_sound.size()]
 			collision_player.play()
-	
+
 	# Sliding
 	if !slide_player.playing:
 		slide_player.stream = slide_sound
@@ -292,9 +295,10 @@ func process_sounds():
 	slide_player_unit_db += (slide_player_unit_db_target - slide_player_unit_db) * 0.9
 	slide_player.unit_db = slide_player_unit_db
 
+
 func shift_gears():
 	var appropriate_gear
-	
+
 	if engine_RPM >= max_engine_RPM:
 		appropriate_gear = current_gear
 		for i in gear_ratio:

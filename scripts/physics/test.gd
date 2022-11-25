@@ -62,11 +62,11 @@ func process_stuff():
 				slide.stream = SLIDE
 				slide.play()
 			
-	#		if lvl > 6:
-	#			var particles = particle_scn.instance()
-	#			globals.main.add_child(particles)
-	#			particles.global_transform.origin = global_transform.origin
-	#			particles.emitting = true
+		#	if lvl > 6:
+		#		var particles = particle_scn.instance()
+		#		globals.main.add_child(particles)
+		#		particles.global_transform.origin = global_transform.origin
+		#		particles.emitting = true
 		else:
 			slide.stop()
 
