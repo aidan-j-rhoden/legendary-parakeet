@@ -10,6 +10,8 @@ export var DAMAGE = 10
 var timer_fire = 0
 var can_fire = true
 
+const THROW_FORCE = 20
+
 # Ammo
 export var MAX_AMMO = 16
 onready var ammo = 0 setget set_ammo
@@ -43,6 +45,7 @@ var is_pickable = true
 
 onready var main_scn = get_tree().root.get_child(get_tree().root.get_child_count() - 1)
 
+
 func _ready():
 	set_ammo(MAX_AMMO)
 	set_ammo_supply(MAX_AMMO)
@@ -51,6 +54,7 @@ func _ready():
 	connect("state_changed", self, "_on_state_changed")
 	get_node("area").connect("body_entered", self, "_on_body_entered")
 
+
 func _physics_process(delta):
 	if flash.visible == true:
 		flash_timer += 1.0 * delta
@@ -58,7 +62,7 @@ func _physics_process(delta):
 			flash.visible = false
 			flash.get_node("light").visible = false
 			flash_timer = 0
-	
+
 	if timer_fire < fire_delay:
 		timer_fire += 1.0 * delta
 	if timer_fire > fire_delay:
@@ -73,30 +77,31 @@ func _physics_process(delta):
 		rotation.y += 1.0 * delta
 		if rotation.y >= TAU:
 			rotation.y = 0
-	
+
 	if drop_timeout_start:
 		drop_timeout += 1.0 * delta
-	
+
 	if drop_timeout >= 1:
 		is_pickable = true
 		drop_timeout_start = false
 		drop_timeout = 0
 
+
 # Fire
 remotesync func fire():
 	if can_fire:
 		timer_fire = 0
-		
+
 		set_ammo(ammo - 1)
 		get_node("audio/fire").play()
 		get_node("animation_player").stop()
 		get_node("animation_player").play("fire")
-		
+
 		# Muzzle flash
 		flash.rotation.z = rand_range(-180, 180)
 		flash.visible = true
 		flash.get_node("light").visible = true
-		
+
 		# Raycast
 		for i in bullets:
 			var from = shooter.camera.global_transform.origin
@@ -116,6 +121,7 @@ remotesync func fire():
 				if result.collider is StaticBody:
 					create_impact(scn_impact, scn_impact_fx, result, shooter.camera.global_transform.basis.z)
 
+
 # Reloading
 remotesync func reload():
 	if ammo < MAX_AMMO and ammo_supply > 0 and is_reloading != true:
@@ -132,6 +138,7 @@ remotesync func reload():
 		yield(get_node("animation_player"), "animation_finished")
 		is_reloading = false
 
+
 func create_impact(scn, scn_fx, result, from):
 	var impact = scn.instance()
 	result.collider.add_child(impact)
@@ -139,30 +146,36 @@ func create_impact(scn, scn_fx, result, from):
 	impact.global_transform = utils.look_at_with_z(impact.global_transform, result.normal, from)
 	randomize()
 	impact.rotation = Vector3(impact.rotation.x, impact.rotation.y, rand_range(-180, 180))
-	
+
 	var impact_fx = scn_fx.instance()
 	get_tree().root.add_child(impact_fx)
 	impact_fx.global_transform.origin = result.position
 	impact_fx.emitting = true
 	impact_fx.global_transform = utils.look_at_with_x(impact_fx.global_transform, result.normal, from)
 
+
 func set_ammo(value):
 	ammo = value
 	emit_signal("ammo_changed", ammo, ammo_supply)
+
 
 func set_ammo_supply(value):
 	ammo_supply = value
 	emit_signal("ammo_changed", ammo, ammo_supply)
 
+
 func _on_ammo_changed(ammo_value, ammo_supply_value):
 	get_node("hud/ammo").text = "AMMO: " + str(ammo_value) + "/" + str(ammo_supply_value)
-	
+
+
 func set_state(value):
 	state = value
 	emit_signal("state_changed", value)
 
+
 func get_state():
 	return state
+
 
 func _on_state_changed(value):
 	match value:
@@ -176,10 +189,12 @@ func _on_state_changed(value):
 			get_node("area").monitoring = true
 			get_node("area/collision_shape").disabled = false
 
+
 # Pick up weapon
 func _on_body_entered(body):
 	shooter = body
 	rpc("pick")
+
 
 remotesync func pick():
 	if shooter != null:
@@ -199,6 +214,7 @@ remotesync func pick():
 					weapon_copy.get_node("audio/ammo").play()
 				queue_free()
 
+
 # Drop weapon
 remotesync func drop():
 	is_reloading = false
@@ -212,6 +228,7 @@ remotesync func drop():
 	shooter = null
 	drop_timeout_start = true
 	set_state(DROPPED)
+
 
 func random_spread(spread_value):
 	randomize()

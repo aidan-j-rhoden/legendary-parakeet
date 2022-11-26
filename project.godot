@@ -39,7 +39,11 @@ gamestate="*res://scripts/gamestate.gd"
 
 window/size/width=1280
 window/size/height=720
-window/size/resizable=false
+window/stretch/aspect="expand"
+
+[global]
+
+definition=false
 
 [input]
 
@@ -126,4 +130,5 @@ name_casing=2
 
 [rendering]
 
+quality/filters/use_fxaa=true
 environment/default_environment="res://default_env.tres"

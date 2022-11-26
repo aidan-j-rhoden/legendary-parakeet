@@ -195,7 +195,7 @@ func process_input(delta):
 		# Basis vectors are already normalized.
 		dir += -cam_xform.basis.z * input_movement_vector.y
 		dir += cam_xform.basis.x * input_movement_vector.x
-	
+
 		# Sprinting
 		if Input.is_action_pressed("sprint"):
 			is_sprinting = true
@@ -236,9 +236,9 @@ func process_input(delta):
 		var camera_target = camera_target_initial
 		var crosshair_alpha = 0.0
 		var fov = fov_initial
-		
+
 		var current_aim = false
-		
+
 		if Input.is_action_just_released("rmb") and aiming_timer <= AIM_HOLD_THRESHOLD:
 			current_aim = true
 			toggled_aim = true
@@ -246,7 +246,7 @@ func process_input(delta):
 			current_aim = toggled_aim or Input.is_action_pressed("rmb")
 			if Input.is_action_just_pressed("rmb"):
 				toggled_aim = false
-		
+
 		if current_aim:
 			aiming_timer += delta
 		else:
@@ -338,9 +338,8 @@ func process_movement(delta):
 	hvel = hvel.linear_interpolate(target, accel * delta)
 	vel.x = hvel.x
 	vel.z = hvel.z
-	
-	vel = move_and_slide(vel, Vector3.UP, 0.05, 4, deg2rad(MAX_SLOPE_ANGLE))
 
+	vel = move_and_slide(vel, Vector3.UP, 0.05, 4, deg2rad(MAX_SLOPE_ANGLE))
 	# Face moving direction
 	if(dir.dot(hvel) > 0):
 		var quat_from = Quat(shape_orientation.basis)
