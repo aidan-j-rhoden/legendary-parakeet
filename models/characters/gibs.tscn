@@ -59,7 +59,6 @@ HIT = [ ExtResource( 8 ) ]
 
 [node name="mesh" type="MeshInstance" parent="gib_1"]
 mesh = ExtResource( 3 )
-material/0 = null
 
 [node name="collision_shape_2" type="CollisionShape" parent="gib_1"]
 shape = SubResource( 1 )
@@ -80,7 +79,6 @@ HIT = [ ExtResource( 8 ) ]
 
 [node name="mesh" type="MeshInstance" parent="gib_2"]
 mesh = ExtResource( 2 )
-material/0 = null
 
 [node name="collision_shape_2" type="CollisionShape" parent="gib_2"]
 shape = SubResource( 3 )
@@ -101,7 +99,6 @@ HIT = [ ExtResource( 8 ) ]
 
 [node name="mesh" type="MeshInstance" parent="gib_3"]
 mesh = ExtResource( 4 )
-material/0 = null
 
 [node name="collision_shape_4" type="CollisionShape" parent="gib_3"]
 shape = SubResource( 5 )
@@ -128,8 +125,6 @@ HIT = [ ExtResource( 8 ) ]
 
 [node name="mesh" type="MeshInstance" parent="gib_4"]
 mesh = ExtResource( 5 )
-material/0 = null
-material/1 = null
 
 [node name="collision_shape" type="CollisionShape" parent="gib_4"]
 shape = SubResource( 9 )
@@ -147,7 +142,6 @@ HIT = [ ExtResource( 8 ) ]
 
 [node name="mesh" type="MeshInstance" parent="gib_5"]
 mesh = ExtResource( 1 )
-material/0 = null
 
 [node name="collision_shape_2" type="CollisionShape" parent="gib_5"]
 shape = SubResource( 10 )
@@ -168,7 +162,6 @@ HIT = [ ExtResource( 8 ) ]
 
 [node name="mesh" type="MeshInstance" parent="gib_6"]
 mesh = ExtResource( 6 )
-material/0 = null
 
 [node name="collision_shape_2" type="CollisionShape" parent="gib_6"]
 shape = SubResource( 12 )

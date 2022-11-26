@@ -34,6 +34,7 @@ var is_aiming = false
 var toggled_aim = false
 var aiming_timer = 0.0
 var is_dead = false
+var falling_to_death = false
 var is_climbing = false
 var is_dancing = false
 var is_in_vehicle = false
@@ -159,6 +160,7 @@ func _physics_process(delta):
 		rpc_unreliable("process_animations", is_in_vehicle, is_grounded, is_climbing, is_dancing, is_aiming, weapon_equipped, hvel.length(), camera_x_rot, camera_y_rot)
 		rpc("check_weapons")
 	if global_transform.origin.y < -12:
+		falling_to_death = true
 		rpc("die")
 
 
@@ -307,7 +309,10 @@ func process_movement(delta):
 	dir.y = 0
 	dir = dir.normalized()
 
-	vel.y += delta * GRAVITY
+	if !falling_to_death:
+		vel.y += delta * GRAVITY
+	else:
+		vel.y = 0
 
 	hvel = vel
 	hvel.y = 0
@@ -399,7 +404,7 @@ remotesync func enter_vehicle():
 	if !is_in_vehicle:
 		if ray_vehicles.is_colliding():
 			if ray_vehicles.get_collider() is VehicleBody and ray_vehicles.get_collider().driver == null:
-				camera.translation = Vector3(0, 0, 6)
+				camera.translation = Vector3(0, 0, 6) #Edit this
 				vehicle = ray_vehicles.get_collider()
 				get_parent().remove_child(self)
 				vehicle.add_child(self)
@@ -528,6 +533,7 @@ func _on_timer_respawn_timeout():
 
 
 remotesync func respawn():
+	falling_to_death = false
 	is_dead = false
 	set_health(100)
 	vel = Vector3()
