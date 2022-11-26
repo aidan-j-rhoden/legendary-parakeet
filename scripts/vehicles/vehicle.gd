@@ -118,6 +118,7 @@ var min_engine_RPM = 1000.0
 var engine_RPM = 0.0
 var prev_engine_RPM = 0.0
 
+
 func _ready():
 	# Misc
 	main_scn = get_tree().root.get_child(get_tree().root.get_child_count() - 1)
@@ -132,7 +133,8 @@ func _ready():
 	
 	# Skids
 	skid_scn = preload("res://scenes/misc/skid.tscn")
-	
+
+
 func _physics_process(delta):
 	if driver:
 		if is_network_master():
@@ -143,6 +145,7 @@ func _physics_process(delta):
 	
 	if is_network_master():
 		rpc("process_other_stuff", delta)
+
 
 func process_input(delta):
 	steer_val = steering_mult * Input.get_joy_axis(0, joy_steering)
@@ -169,7 +172,8 @@ func process_input(delta):
 			steer_val = 1.0
 		elif Input.is_action_pressed("movement_right"):
 			steer_val = -1.0
-	
+
+
 master func process_other_stuff(delta):
 	steer_target = steer_val * MAX_STEER_ANGLE
 	
@@ -181,9 +185,9 @@ master func process_other_stuff(delta):
 		steer_angle += steer_speed * delta
 		if (steer_target < steer_angle):
 			steer_angle = steer_target
-	
+
 	steering = steer_angle
-	
+
 	# Velocity
 	lvl = linear_velocity.length()
 	# Same
@@ -216,34 +220,35 @@ master func process_other_stuff(delta):
 		var skid_unit_size_target = (1 - w.node.get_skidinfo()) * 5
 		skid_unit_size += (skid_unit_size_target - skid_unit_size) * 0.25
 		w.skid.unit_size = skid_unit_size
-		
+
 		if w.node.is_in_contact() and w.node.get_skidinfo() < 0.15:
 			var skid = skid_scn.instance()
 			main_scn.add_child(skid)
 			skid.global_transform.origin = w.node.global_transform.origin + Vector3(0, -w.node.wheel_radius + 0.15, 0)
 		
 		w.rpm = (lvl / (w.node.wheel_radius * TAU)) * 300
-	
+
 	# Engine
 	engine_RPM = clamp(((wheels.FL.rpm + wheels.FR.rpm)) / 2 * gear_ratio[current_gear], min_engine_RPM, max_engine_RPM)
 	#engine_RPM = (throttle_val * gear_ratio[current_gear]) * 1000
 	#print(engine_RPM)
-	
+
 	shift_gears()
-	
+
 	#print(current_gear)
 	#print(linear_velocity.length())
 	#print(current_speed_mps)
 	#print(get_speed_kph())
 	#print(wheels.FL.rpm)
-	
+
 	process_sounds()
-	
+
 	prev_lvl = lvl
 	prev_pos = translation
 	prev_engine_RPM = engine_RPM
-	
+
 	rpc_unreliable("update_trans_rot", translation, rotation, get_node("body").rotation, driver, engine_force, steer_angle, engine_RPM)
+
 
 puppet func update_trans_rot(trans, rot, body_rot, drv, en_f, st_angle, en_RPM):
 	translation = trans
@@ -254,7 +259,8 @@ puppet func update_trans_rot(trans, rot, body_rot, drv, en_f, st_angle, en_RPM):
 	engine_force = en_f
 	engine_RPM = en_RPM
 	process_sounds()
-	
+
+
 func process_sounds():
 	if !engine_player.playing:
 		engine_player.stream = engine_sound
@@ -316,6 +322,7 @@ func shift_gears():
 				appropriate_gear = j
 				break
 		current_gear = appropriate_gear
+
 
 func get_speed_kph():
 	return current_speed_mps * 3600.0 / 1000.0

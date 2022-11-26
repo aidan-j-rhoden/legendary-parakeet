@@ -10,8 +10,6 @@ export var DAMAGE = 10
 var timer_fire = 0
 var can_fire = true
 
-const THROW_FORCE = 20
-
 # Ammo
 export var MAX_AMMO = 16
 onready var ammo = 0 setget set_ammo

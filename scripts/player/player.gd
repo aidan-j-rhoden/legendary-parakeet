@@ -255,11 +255,17 @@ func process_input(delta):
 		if is_aiming != current_aim:
 			is_aiming = current_aim
 		if is_aiming and weapon_equipped:
-			camera_target.x = -1.25
-			crosshair_alpha = 1.0
-			fov = 60
+			if is_in_vehicle:
+				camera_target.z = 0.5
+				crosshair_alpha = 1.0
+				fov = 60
+			else:
+				camera_target.x = -1.25
+				crosshair_alpha = 1.0
+				fov = 60
 
 		target.transform.origin.x += (camera_target.x - target.transform.origin.x) * 0.15
+		target.transform.origin.z += (camera_target.z - target.transform.origin.z) * 0.15
 		crosshair.modulate.a += (crosshair_alpha - crosshair.modulate.a) * 0.15
 		camera.fov += (fov - camera.fov) * 0.15
 
@@ -403,24 +409,24 @@ remotesync func enter_vehicle():
 	if !is_in_vehicle:
 		if ray_vehicles.is_colliding():
 			if ray_vehicles.get_collider() is VehicleBody and ray_vehicles.get_collider().driver == null:
-				camera.translation = Vector3(0, 0, 6) #Edit this
+				camera.translation = Vector3(0.5, -0.1, 0.2) #Edit this
 				vehicle = ray_vehicles.get_collider()
 				get_parent().remove_child(self)
 				vehicle.add_child(self)
 				shape.disabled = true
-				
+
 				if vehicle.driver == null:
 					global_transform.origin = vehicle.transform.origin + vehicle.transform.basis.x * 0.5 + vehicle.transform.basis.y * 1.75
 				else:
 					global_transform.origin = vehicle.transform.origin + vehicle.transform.basis.x * -0.5 + vehicle.transform.basis.y * 1.75
-				
+
 				vehicle.driver = self
 				vehicle.set_network_master(int(self.get_name()))
 				shape.rotation.y = vehicle.get_node("body").transform.basis.get_euler().y
-				
+
 				is_in_vehicle = true
 				# Temporary
-				camera.clip_to_bodies = false
+				camera.clip_to_bodies = true
 	else:
 		animation_state_machine.travel("blend_tree")
 		get_parent().remove_child(self)
@@ -463,10 +469,9 @@ remotesync func process_animations(is_in_vehicle, is_grounded, is_climbing, is_d
 			animation_tree["parameters/blend_tree/pistol_aim_dir_x_blend/blend_amount"] = -camera_x_rot
 			animation_tree["parameters/blend_tree/pistol_aim_dir_y_blend/blend_amount"] = camera_y_rot
 		else:
-			pass
-			#animation_tree["parameters/blend_tree/aim_blend/blend_amount"] = 1
-			#animation_tree["parameters/blend_tree/aim_dir_x_blend/blend_amount"] = -camera_x_rot
-			#animation_tree["parameters/blend_tree/aim_dir_y_blend/blend_amount"] = camera_y_rot
+			animation_tree["parameters/blend_tree/aim_blend/blend_amount"] = 1
+			animation_tree["parameters/blend_tree/aim_dir_x_blend/blend_amount"] = -camera_x_rot
+			animation_tree["parameters/blend_tree/aim_dir_y_blend/blend_amount"] = camera_y_rot
 	else:
 		if weapon_equipped:
 			animation_tree["parameters/blend_tree/pistol_aim_blend/blend_amount"] = 0
