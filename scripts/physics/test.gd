@@ -38,7 +38,7 @@ func process_stuff():
 	avx = angular_velocity.x
 	avy = angular_velocity.y
 	avz = angular_velocity.z
-	
+
 	var bodies = get_colliding_bodies()
 
 	if roll:

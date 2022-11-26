@@ -7,6 +7,7 @@ export var fire_delay = 0.1
 export var bullets = 1
 export(float, 0, 100, 5) var spread = 0
 export var DAMAGE = 10
+export var fov = 60
 var timer_fire = 0
 var can_fire = true
 

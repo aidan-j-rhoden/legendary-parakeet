@@ -255,14 +255,15 @@ func process_input(delta):
 		if is_aiming != current_aim:
 			is_aiming = current_aim
 		if is_aiming and weapon_equipped:
+			crosshair_alpha = 1.0
+			fov = equipped_weapon.fov
 			if is_in_vehicle:
+				camera.translation = Vector3(0.5, -0.1, 0.2)
 				camera_target.z = 0.5
-				crosshair_alpha = 1.0
-				fov = 60
 			else:
 				camera_target.x = -1.25
-				crosshair_alpha = 1.0
-				fov = 60
+		elif !is_aiming and is_in_vehicle:
+			camera.translation = Vector3(0, 0, 5)
 
 		target.transform.origin.x += (camera_target.x - target.transform.origin.x) * 0.15
 		target.transform.origin.z += (camera_target.z - target.transform.origin.z) * 0.15
@@ -409,7 +410,8 @@ remotesync func enter_vehicle():
 	if !is_in_vehicle:
 		if ray_vehicles.is_colliding():
 			if ray_vehicles.get_collider() is VehicleBody and ray_vehicles.get_collider().driver == null:
-				camera.translation = Vector3(0.5, -0.1, 0.2) #Edit this
+				#camera.translation = Vector3(0.5, -0.1, 0.2) #Edit this
+				camera.translation = Vector3(0, 0, 5)
 				vehicle = ray_vehicles.get_collider()
 				get_parent().remove_child(self)
 				vehicle.add_child(self)
@@ -426,7 +428,7 @@ remotesync func enter_vehicle():
 
 				is_in_vehicle = true
 				# Temporary
-				camera.clip_to_bodies = true
+				camera.clip_to_bodies = false
 	else:
 		animation_state_machine.travel("blend_tree")
 		get_parent().remove_child(self)

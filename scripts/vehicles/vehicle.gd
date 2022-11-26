@@ -141,8 +141,8 @@ func _physics_process(delta):
 			process_input(delta)
 	else:
 		throttle_val = 0.0
-		brake_val = 1.0
-	
+		brake_val = 0.2
+
 	if is_network_master():
 		rpc("process_other_stuff", delta)
 
@@ -151,15 +151,15 @@ func process_input(delta):
 	steer_val = steering_mult * Input.get_joy_axis(0, joy_steering)
 	#throttle_val = throttle_mult * Input.get_joy_axis(0, joy_throttle)
 	brake_val = brake_mult * Input.get_joy_axis(0, joy_brake)
-	
+
 	throttle_val_target = 0.0
-	
+
 	if (throttle_val_target < 0.0):
 		throttle_val_target = 0.0
 	
 	if (brake_val < 0.0):
 		brake_val = 0.0
-	
+
 	# overrules for keyboard
 	if driver.is_network_master():
 		if Input.is_action_pressed("movement_forward"):
@@ -176,7 +176,7 @@ func process_input(delta):
 
 master func process_other_stuff(delta):
 	steer_target = steer_val * MAX_STEER_ANGLE
-	
+
 	if (steer_target < steer_angle):
 		steer_angle -= steer_speed * delta
 		if (steer_target > steer_angle):
@@ -192,9 +192,9 @@ master func process_other_stuff(delta):
 	lvl = linear_velocity.length()
 	# Same
 	current_speed_mps = (translation - prev_pos).length() / delta
-	
+
 	throttle_val += (throttle_val_target - throttle_val) * 10 * delta
-	
+
 	# Wheels
 	for w in wheels.values():
 		if w.node.is_in_contact():
