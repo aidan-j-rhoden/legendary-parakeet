@@ -195,4 +195,4 @@ transform = Transform( 0.192333, 0, -0.98133, 0, 1, 0, 0.98133, 0, 0.192333, 35.
 transform = Transform( 0.62606, 0, 0.779775, 0, 1, 0, -0.779775, 0, 0.62606, -20.9929, 0.595084, 134.718 )
 
 [node name="truck_auto" parent="." instance=ExtResource( 6 )]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -53.5457, -0.949262, 44.8358 )
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 16.1433, -0.0579181, 6.06323 )

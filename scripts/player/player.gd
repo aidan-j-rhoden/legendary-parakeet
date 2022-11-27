@@ -412,6 +412,8 @@ remotesync func enter_vehicle():
 			if ray_vehicles.get_collider() is VehicleBody:# and ray_vehicles.get_collider().driver == null:
 				if ray_vehicles.get_collider().name == "truck_auto":
 					ray_vehicles.get_collider().driver = self
+					voice_player.stream = pain_sound #Temp
+					voice_player.play()
 				else:
 					#camera.translation = Vector3(0.5, -0.1, 0.2) #Edit this
 					camera.translation = Vector3(0, 0, 5)

@@ -118,6 +118,9 @@ var min_engine_RPM = 1000.0
 var engine_RPM = 0.0
 var prev_engine_RPM = 0.0
 
+#Obsticle avoidance
+onready var raycast = $spatial/raycast_front
+
 
 func _ready():
 	# Misc
@@ -136,10 +139,9 @@ func _ready():
 
 
 func _physics_process(delta):
-	if driver:
-		choose_target()
-		if is_network_master():
-			process_input(delta)
+	choose_target()
+	if is_network_master(): #prob doesn't matter
+		process_drive(delta)
 	else:
 		throttle_val = 0.0
 		brake_val = 0.2
@@ -155,12 +157,26 @@ func choose_target():
 			pass
 
 
-func process_input(delta):
-	steer_val = steering_mult * Input.get_joy_axis(0, joy_steering)
-	#throttle_val = throttle_mult * Input.get_joy_axis(0, joy_throttle)
-	brake_val = brake_mult * Input.get_joy_axis(0, joy_brake)
+func check_for_obsticles():
+	if raycast.is_colliding():
+		var collision = raycast.get_collider()
+		print(collision)
+		if driver:
+			if collision == driver:
+				steer_val = -1.0
+		elif collision is Player:
+			steer_val = 0.0
+			throttle_val_target = 1.0
 
-	throttle_val_target = 0.0
+
+func process_drive(delta):
+	#steer_val = steering_mult * Input.get_joy_axis(0, joy_steering)
+	#throttle_val = throttle_mult * Input.get_joy_axis(0, joy_throttle)
+	#brake_val = brake_mult * Input.get_joy_axis(0, joy_brake)
+
+	#throttle_val_target = 0.0
+
+	check_for_obsticles()
 
 	if (throttle_val_target < 0.0):
 		throttle_val_target = 0.0
