@@ -191,7 +191,7 @@ func _on_state_changed(value):
 
 
 # Pick up weapon
-func _on_body_entered(body):
+remotesync func _on_body_entered(body):
 	shooter = body
 	rpc("pick")
 
