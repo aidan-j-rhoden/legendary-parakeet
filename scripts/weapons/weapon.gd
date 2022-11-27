@@ -111,6 +111,7 @@ remotesync func fire():
 				if result.collider is Player:
 					shooter.get_node("audio/hit").play()
 					result.collider.rpc("hit", DAMAGE, (result.position - global_transform.origin).normalized() * knockback_multiplier)
+					result.collider.rpc("hurt", DAMAGE)
 					create_impact(scn_wound, scn_blood_fx, result, shooter.camera.global_transform.basis.z)
 				if result.collider is RigidBody:
 					var position = result.position - result.collider.global_transform.origin
@@ -138,7 +139,7 @@ remotesync func reload():
 		is_reloading = false
 
 
-func create_impact(scn, scn_fx, result, from):
+remotesync func create_impact(scn, scn_fx, result, from):
 	var impact = scn.instance()
 	result.collider.add_child(impact)
 	impact.global_transform.origin = result.position
@@ -190,7 +191,7 @@ func _on_state_changed(value):
 
 
 # Pick up weapon
-func _on_body_entered(body):
+remotesync func _on_body_entered(body):
 	shooter = body
 	rpc("pick")
 
