@@ -1,10 +1,11 @@
-[gd_scene load_steps=6 format=2]
+[gd_scene load_steps=7 format=2]
 
 [ext_resource path="res://models/maps/map.tscn" type="PackedScene" id=1]
 [ext_resource path="res://scenes/props/barrel.tscn" type="PackedScene" id=2]
 [ext_resource path="res://scenes/props/cube.tscn" type="PackedScene" id=3]
 [ext_resource path="res://scenes/weapons/glock.tscn" type="PackedScene" id=4]
 [ext_resource path="res://scenes/vehicles/truck.tscn" type="PackedScene" id=5]
+[ext_resource path="res://scenes/vehicles/auto_truck.tscn" type="PackedScene" id=6]
 
 [node name="main" type="Spatial"]
 
@@ -192,3 +193,6 @@ transform = Transform( 0.192333, 0, -0.98133, 0, 1, 0, 0.98133, 0, 0.192333, 35.
 
 [node name="truck_3" parent="." instance=ExtResource( 5 )]
 transform = Transform( 0.62606, 0, 0.779775, 0, 1, 0, -0.779775, 0, 0.62606, -20.9929, 0.595084, 134.718 )
+
+[node name="truck_auto" parent="." instance=ExtResource( 6 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -53.5457, -0.949262, 44.8358 )

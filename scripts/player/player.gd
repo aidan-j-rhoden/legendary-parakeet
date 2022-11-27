@@ -409,26 +409,29 @@ remotesync func toggle_weapon():
 remotesync func enter_vehicle():
 	if !is_in_vehicle:
 		if ray_vehicles.is_colliding():
-			if ray_vehicles.get_collider() is VehicleBody and ray_vehicles.get_collider().driver == null:
-				#camera.translation = Vector3(0.5, -0.1, 0.2) #Edit this
-				camera.translation = Vector3(0, 0, 5)
-				vehicle = ray_vehicles.get_collider()
-				get_parent().remove_child(self)
-				vehicle.add_child(self)
-				shape.disabled = true
-
-				if vehicle.driver == null:
-					global_transform.origin = vehicle.transform.origin + vehicle.transform.basis.x * 0.5 + vehicle.transform.basis.y * 1.75
+			if ray_vehicles.get_collider() is VehicleBody:# and ray_vehicles.get_collider().driver == null:
+				if ray_vehicles.get_collider().name == "truck_auto":
+					ray_vehicles.get_collider().driver = self
 				else:
-					global_transform.origin = vehicle.transform.origin + vehicle.transform.basis.x * -0.5 + vehicle.transform.basis.y * 1.75
+					#camera.translation = Vector3(0.5, -0.1, 0.2) #Edit this
+					camera.translation = Vector3(0, 0, 5)
+					vehicle = ray_vehicles.get_collider()
+					get_parent().remove_child(self)
+					vehicle.add_child(self)
+					shape.disabled = true
 
-				vehicle.driver = self
-				vehicle.set_network_master(int(self.get_name()))
-				shape.rotation.y = vehicle.get_node("body").transform.basis.get_euler().y
+					if vehicle.driver == null:
+						global_transform.origin = vehicle.transform.origin + vehicle.transform.basis.x * 0.5 + vehicle.transform.basis.y * 1.75
+					else:
+						global_transform.origin = vehicle.transform.origin + vehicle.transform.basis.x * -0.5 + vehicle.transform.basis.y * 1.75
 
-				is_in_vehicle = true
-				# Temporary
-				camera.clip_to_bodies = false
+					vehicle.driver = self
+					vehicle.set_network_master(int(self.get_name()))
+					shape.rotation.y = vehicle.get_node("body").transform.basis.get_euler().y
+
+					is_in_vehicle = true
+					# Temporary
+					camera.clip_to_bodies = false
 	else:
 		animation_state_machine.travel("blend_tree")
 		get_parent().remove_child(self)
@@ -438,7 +441,7 @@ remotesync func enter_vehicle():
 
 		global_transform.origin = vehicle.transform.origin + vehicle.transform.basis.x * 2 + vehicle.transform.basis.y * 1
 		shape.rotation.y = vehicle.transform.basis.get_euler().y
-		
+
 		vel = vehicle.linear_velocity * 1.5
 
 		vehicle.driver = null
