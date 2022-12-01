@@ -380,6 +380,19 @@ doppler_tracking = 2
 [node name="spatial" type="Spatial" parent="."]
 
 [node name="raycast_front" type="RayCast" parent="spatial"]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.28551, 2.99471 )
+transform = Transform( 60, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.28551, 3.12616 )
 enabled = true
-cast_to = Vector3( 0, 0, 25 )
+cast_to = Vector3( 0, 0, 3 )
+collision_mask = 3
+
+[node name="raycast_f_left" type="RayCast" parent="spatial"]
+transform = Transform( 42.4264, 0, 0.707107, 0, 1, 0, -42.4264, 0, 0.707107, 0, 1, 3.126 )
+enabled = true
+cast_to = Vector3( 0, 0, 3 )
+collision_mask = 3
+
+[node name="raycast_f_right" type="RayCast" parent="spatial"]
+transform = Transform( 42.4264, 0, -0.707107, 0, 1, 0, 42.4264, 0, 0.707107, 0, 1, 3.126 )
+enabled = true
+cast_to = Vector3( 0, 0, 3 )
+collision_mask = 3

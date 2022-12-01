@@ -119,7 +119,9 @@ var engine_RPM = 0.0
 var prev_engine_RPM = 0.0
 
 #Obsticle avoidance
-onready var raycast = $spatial/raycast_front
+onready var raycast_front = $spatial/raycast_front
+onready var raycast_f_left = $spatial/raycast_f_left
+onready var raycast_f_right = $spatial/raycast_f_right
 
 
 func _ready():
@@ -139,7 +141,7 @@ func _ready():
 
 
 func _physics_process(delta):
-	choose_target()
+	var target = choose_target()
 	if is_network_master(): #prob doesn't matter
 		process_drive(delta)
 	else:
@@ -150,23 +152,67 @@ func _physics_process(delta):
 		rpc("process_other_stuff", delta)
 
 
-func choose_target():
+func choose_target() -> Vector3:
 	var dis_to_target
 	for i in gamestate.players:
 		if i == driver:
 			pass
+		if global_transform.origin.distance_to(i) < dis_to_target:
+			dis_to_target = i
+	return dis_to_target
 
 
 func check_for_obsticles():
-	if raycast.is_colliding():
-		var collision = raycast.get_collider()
-		print(collision)
+	if raycast_front.is_colliding():
+		var collision = raycast_front.get_collider()
 		if driver:
 			if collision == driver:
-				steer_val = -1.0
-		elif collision is Player:
+				steer_target = 0.0
+				brake_val = 1.0
+		if collision is Player and collision != driver:
 			steer_val = 0.0
 			throttle_val_target = 1.0
+			brake_val = 0.0
+		if collision is StaticBody:
+			throttle_val_target = -1.0
+			brake_val = 0.0
+	if raycast_f_left.is_colliding():
+		var collision = raycast_f_left.get_collider()
+		if driver:
+			if collision == driver:
+				brake_val = 1.0
+				steer_target = -1.0
+		if collision is Player and collision != driver:
+			steer_val = 1.0
+			throttle_val_target = 1.0
+			brake_val = 0.0
+		if collision is StaticBody:
+			steer_target = -1.0
+	if raycast_f_right.is_colliding():
+		var collision = raycast_f_right.get_collider()
+		if driver:
+			if collision == driver:
+				brake_val = 1.0
+				steer_target = 1.0
+		if collision is Player and collision != driver:
+			steer_val = -1.0
+			throttle_val_target = 1.0
+			brake_val = 0.0
+		if collision is StaticBody:
+			steer_target = 1.0
+
+	if not any_detection():
+		throttle_val_target = 0.0
+		steer_val = 0.0
+		brake_val = 0.5
+		print("running...")
+
+
+func any_detection() -> bool:
+	for i in $spatial.get_children():
+		if i.is_colliding():
+			return true
+	return false
 
 
 func process_drive(delta):

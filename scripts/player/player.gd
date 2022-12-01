@@ -411,7 +411,8 @@ remotesync func enter_vehicle():
 		if ray_vehicles.is_colliding():
 			if ray_vehicles.get_collider() is VehicleBody:# and ray_vehicles.get_collider().driver == null:
 				if ray_vehicles.get_collider().name == "truck_auto":
-					ray_vehicles.get_collider().driver = self
+					vehicle = ray_vehicles.get_collider()
+					vehicle.driver = self
 					voice_player.stream = pain_sound #Temp
 					voice_player.play()
 				else:
@@ -435,22 +436,27 @@ remotesync func enter_vehicle():
 					# Temporary
 					camera.clip_to_bodies = false
 	else:
-		animation_state_machine.travel("blend_tree")
-		get_parent().remove_child(self)
-		main_scn.add_child(self)
-		shape.disabled = false
-		camera.translation = Vector3(0, 0, 2)
+		if vehicle.name != "truck_auto":
+			animation_state_machine.travel("blend_tree")
+			get_parent().remove_child(self)
+			main_scn.add_child(self)
+			shape.disabled = false
+			camera.translation = Vector3(0, 0, 2)
 
-		global_transform.origin = vehicle.transform.origin + vehicle.transform.basis.x * 2 + vehicle.transform.basis.y * 1
-		shape.rotation.y = vehicle.transform.basis.get_euler().y
+			global_transform.origin = vehicle.transform.origin + vehicle.transform.basis.x * 2 + vehicle.transform.basis.y * 1
+			shape.rotation.y = vehicle.transform.basis.get_euler().y
 
-		vel = vehicle.linear_velocity * 1.5
+			vel = vehicle.linear_velocity * 1.5
 
-		vehicle.driver = null
-		vehicle = null
-		is_in_vehicle = false
-		# Temporary
-		camera.clip_to_bodies = true
+			vehicle.driver = null
+			vehicle = null
+			is_in_vehicle = false
+			# Temporary
+			camera.clip_to_bodies = true
+		else:
+			vehicle.driver = null
+			vehicle = null
+			is_in_vehicle = false
 
 
 # Animations
