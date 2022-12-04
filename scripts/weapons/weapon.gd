@@ -35,6 +35,7 @@ enum {
 	PICKED,
 	DROPPED
 }
+
 onready var state = DROPPED setget set_state, get_state
 signal state_changed
 
@@ -48,7 +49,7 @@ onready var main_scn = get_tree().root.get_child(get_tree().root.get_child_count
 func _ready():
 	set_ammo(MAX_AMMO)
 	set_ammo_supply(MAX_AMMO)
-	
+
 	connect("ammo_changed", self, "_on_ammo_changed")
 	connect("state_changed", self, "_on_state_changed")
 	get_node("area").connect("body_entered", self, "_on_body_entered")
@@ -101,8 +102,7 @@ remotesync func fire():
 		flash.visible = true
 		flash.get_node("light").visible = true
 
-		# Raycast
-		for i in bullets:
+		for i in bullets: # Raycast
 			var from = shooter.camera.global_transform.origin
 			var to = from + (shooter.camera.global_transform.basis.z * -ray_length + random_spread(spread))
 			var space_state = get_world().direct_space_state

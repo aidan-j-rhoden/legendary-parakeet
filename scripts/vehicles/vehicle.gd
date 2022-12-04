@@ -22,6 +22,7 @@ export var brake_mult = 1.0
 
 # Sounds
 var engine_player
+var turbo_player
 var brakes_player
 var air_player
 var collision_player
@@ -29,6 +30,7 @@ var slide_player
 
 var idle_sound = preload("res://sounds/vehicles/truck/idle.wav")
 var engine_sound = preload("res://sounds/vehicles/truck/idle.wav")
+var turbo_sound = preload("res://sounds/vehicles/truck/engine.wav")
 var brakes_sound = preload("res://sounds/vehicles/truck/brakes.wav")
 var tire_sound = preload("res://sounds/vehicles/truck/tires.wav")
 var skid_sound = preload("res://sounds/vehicles/truck/skid.wav")
@@ -118,6 +120,9 @@ var min_engine_RPM = 1000.0
 var engine_RPM = 0.0
 var prev_engine_RPM = 0.0
 
+onready var turbo_timer = $turbo_timer
+var turbo_active = false
+
 
 func _ready():
 	# Misc
@@ -127,6 +132,7 @@ func _ready():
 	collision_player = get_node("audio/collision")
 	slide_player = get_node("audio/slide")
 	engine_player = get_node("audio/engine")
+	turbo_player = $audio/turbo_player
 	brakes_player = get_node("audio/breaks")
 	air_player = get_node("audio/air")
 	air_player.stream = air_sound
@@ -145,6 +151,9 @@ func _physics_process(delta):
 
 	if is_network_master():
 		rpc("process_other_stuff", delta)
+	
+	if turbo_timer.time_left <= 7.8:
+		turbo_active = false
 
 
 func process_input(delta):
@@ -172,6 +181,14 @@ func process_input(delta):
 			steer_val = 1.0
 		elif Input.is_action_pressed("movement_right"):
 			steer_val = -1.0
+		#print(turbo_timer.time_left)
+		if Input.is_action_pressed("turbo") and turbo_timer.time_left <= 0:
+			turbo_active = true
+			turbo_timer.start()
+			turbo_player.stream = turbo_sound
+			turbo_player.play()
+		if turbo_active == true and turbo_timer.time_left >= 7.8:
+			throttle_val *= 2
 
 
 master func process_other_stuff(delta):

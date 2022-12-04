@@ -123,6 +123,8 @@ onready var raycast_front = $spatial/raycast_front
 onready var raycast_f_left = $spatial/raycast_f_left
 onready var raycast_f_right = $spatial/raycast_f_right
 
+onready var animation_player = $animation_player
+
 
 func _ready():
 	# Misc
@@ -152,6 +154,13 @@ func _physics_process(delta):
 		rpc("process_other_stuff", delta)
 
 
+func _process(_delta):
+	if throttle_val_target != 0.0 and brake_val != 0.0:
+		animation_player.play("Error01")
+	else:
+		animation_player.stop(true)
+
+
 func choose_target() -> Vector3:
 	var dis_to_target
 	for i in gamestate.players:
@@ -165,47 +174,45 @@ func choose_target() -> Vector3:
 func check_for_obsticles():
 	if raycast_front.is_colliding():
 		var collision = raycast_front.get_collider()
-		if driver:
-			if collision == driver:
-				steer_target = 0.0
-				brake_val = 1.0
-		if collision is Player and collision != driver:
+		if driver and collision == driver:
+			steer_target = 0.0
+			brake_val = 1.0
+		elif collision is Player:
 			steer_val = 0.0
-			throttle_val_target = 1.0
+			throttle_val_target = 5.0
 			brake_val = 0.0
-		if collision is StaticBody:
+		elif collision is StaticBody:
 			throttle_val_target = -1.0
 			brake_val = 0.0
 	if raycast_f_left.is_colliding():
 		var collision = raycast_f_left.get_collider()
-		if driver:
-			if collision == driver:
-				brake_val = 1.0
-				steer_target = -1.0
-		if collision is Player and collision != driver:
+		if driver and collision == driver:
+			brake_val = 1.0
+			steer_target = -1.0
+			throttle_val_target = 0.0
+		elif collision is Player:
 			steer_val = 1.0
-			throttle_val_target = 1.0
+			throttle_val_target = 5.0
 			brake_val = 0.0
-		if collision is StaticBody:
+		elif collision is StaticBody:
 			steer_target = -1.0
 	if raycast_f_right.is_colliding():
 		var collision = raycast_f_right.get_collider()
-		if driver:
-			if collision == driver:
-				brake_val = 1.0
-				steer_target = 1.0
-		if collision is Player and collision != driver:
+		if driver and collision == driver:
+			brake_val = 1.0
+			steer_target = 1.0
+			throttle_val_target = 0.0
+		elif collision is Player:
 			steer_val = -1.0
 			throttle_val_target = 1.0
 			brake_val = 0.0
-		if collision is StaticBody:
+		elif collision is StaticBody:
 			steer_target = 1.0
 
 	if not any_detection():
 		throttle_val_target = 0.0
 		steer_val = 0.0
-		brake_val = 0.5
-		print("running...")
+		brake_val = 0.2
 
 
 func any_detection() -> bool:
@@ -215,7 +222,7 @@ func any_detection() -> bool:
 	return false
 
 
-func process_drive(delta):
+func process_drive(_delta):
 	#steer_val = steering_mult * Input.get_joy_axis(0, joy_steering)
 	#throttle_val = throttle_mult * Input.get_joy_axis(0, joy_throttle)
 	#brake_val = brake_mult * Input.get_joy_axis(0, joy_brake)
@@ -224,8 +231,8 @@ func process_drive(delta):
 
 	check_for_obsticles()
 
-	if (throttle_val_target < 0.0):
-		throttle_val_target = 0.0
+	#if (throttle_val_target < 0.0):
+	#	throttle_val_target = 0.0
 
 	if (brake_val < 0.0):
 		brake_val = 0.0
@@ -285,7 +292,7 @@ master func process_other_stuff(delta):
 			if !w.skid.playing:
 				w.skid.stream = skid_sound
 				w.skid.play()
-		
+
 		var skid_unit_size = 0.0
 		var skid_unit_size_target = (1 - w.node.get_skidinfo()) * 5
 		skid_unit_size += (skid_unit_size_target - skid_unit_size) * 0.25

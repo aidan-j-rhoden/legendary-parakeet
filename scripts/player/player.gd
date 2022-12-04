@@ -32,6 +32,7 @@ var is_grounded = false
 var is_sprinting = false
 var is_aiming = false
 var toggled_aim = false
+var current_aim = false
 var aiming_timer = 0.0
 var is_dead = false
 var falling_to_death = false
@@ -179,7 +180,7 @@ func process_input(delta):
 	var cam_xform = get_node("camera_base/rotation/target/camera").global_transform
 
 	var input_movement_vector = Vector2()
-	
+
 	if !is_climbing and !is_dead:
 		if Input.is_action_pressed("movement_forward"):
 			input_movement_vector.y += 1
@@ -237,7 +238,7 @@ func process_input(delta):
 		var crosshair_alpha = 0.0
 		var fov = fov_initial
 
-		var current_aim = false
+		current_aim = false
 
 		if Input.is_action_just_released("rmb") and aiming_timer <= AIM_HOLD_THRESHOLD:
 			current_aim = true
@@ -525,6 +526,10 @@ remotesync func die():
 		hit_player.stream = body_splat
 		hit_player.play()
 
+		current_aim = false
+		is_aiming = false
+		toggled_aim = false
+
 		# Gibs
 		visible = false
 		var gibs = gibs_scn.instance()
@@ -532,7 +537,7 @@ remotesync func die():
 		gibs.global_transform.origin = global_transform.origin
 		for c in gibs.get_children():
 			c.apply_impulse(global_transform.origin, c.global_transform.origin - global_transform.origin * 1.1)
-		
+
 		is_dead = true
 		get_node("timer_respawn").start()
 
