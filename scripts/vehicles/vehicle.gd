@@ -127,7 +127,7 @@ var turbo_active = false
 func _ready():
 	# Misc
 	main_scn = get_tree().root.get_child(get_tree().root.get_child_count() - 1)
-	
+
 	# Sounds
 	collision_player = get_node("audio/collision")
 	slide_player = get_node("audio/slide")
