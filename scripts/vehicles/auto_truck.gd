@@ -120,8 +120,8 @@ var prev_engine_RPM = 0.0
 
 #Obsticle avoidance
 onready var raycast_front = $spatial/raycast_front
-onready var raycast_f_left = $spatial/raycast_f_left
-onready var raycast_f_right = $spatial/raycast_f_right
+onready var raycast_left = $spatial/raycast_left
+onready var raycast_right = $spatial/raycast_right
 
 onready var animation_player = $animation_player
 
@@ -153,7 +153,6 @@ func _physics_process(delta):
 	if is_network_master():
 		rpc("process_other_stuff", delta)
 
-
 func _process(_delta):
 	if throttle_val_target != 0.0 and brake_val != 0.0:
 		animation_player.play("Error01")
@@ -184,8 +183,8 @@ func check_for_obsticles():
 		elif collision is StaticBody:
 			throttle_val_target = -1.0
 			brake_val = 0.0
-	if raycast_f_left.is_colliding():
-		var collision = raycast_f_left.get_collider()
+	if raycast_left.is_colliding():
+		var collision = raycast_left.get_collider()
 		if driver and collision == driver:
 			brake_val = 1.0
 			steer_target = -1.0
@@ -196,8 +195,8 @@ func check_for_obsticles():
 			brake_val = 0.0
 		elif collision is StaticBody:
 			steer_target = -1.0
-	if raycast_f_right.is_colliding():
-		var collision = raycast_f_right.get_collider()
+	if raycast_right.is_colliding():
+		var collision = raycast_right.get_collider()
 		if driver and collision == driver:
 			brake_val = 1.0
 			steer_target = 1.0

@@ -48,6 +48,7 @@ var crosshair
 var camera_target_initial : Vector3
 var crosshair_color_initial : Color
 var fov_initial
+var fov
 
 # Force
 const GRAB_DISTANCE = 50
@@ -236,7 +237,7 @@ func process_input(delta):
 		# Aiming
 		var camera_target = camera_target_initial
 		var crosshair_alpha = 0.0
-		var fov = fov_initial
+		fov = fov_initial
 
 		current_aim = false
 
@@ -255,7 +256,7 @@ func process_input(delta):
 
 		if is_aiming != current_aim:
 			is_aiming = current_aim
-		if is_aiming and weapon_equipped:
+		if is_aiming and weapon_equipped and equipped_weapon:
 			crosshair_alpha = 1.0
 			fov = equipped_weapon.fov
 			if is_in_vehicle:
@@ -349,7 +350,7 @@ func process_movement(delta):
 
 	vel = move_and_slide(vel, Vector3.UP, 0.05, 4, deg2rad(MAX_SLOPE_ANGLE))
 	# Face moving direction
-	if(dir.dot(hvel) > 0):
+	if dir.dot(hvel) > 0:
 		var quat_from = Quat(shape_orientation.basis)
 		var quat_to = Quat(Transform().looking_at(-dir, Vector3.UP).basis)
 		shape_orientation.basis = Basis(quat_from.slerp(quat_to, delta * 10))
@@ -526,9 +527,13 @@ remotesync func die():
 		hit_player.stream = body_splat
 		hit_player.play()
 
-		current_aim = false
-		is_aiming = false
-		toggled_aim = false
+#		current_aim = false
+#		is_aiming = false
+#		toggled_aim = false
+#		aiming_timer = 0.0
+#		camera_target_initial = target.transform.origin
+#		fov_initial = camera.fov
+#		crosshair.modulate.a = 0.0
 
 		# Gibs
 		visible = false

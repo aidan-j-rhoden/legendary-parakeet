@@ -438,14 +438,14 @@ enabled = true
 cast_to = Vector3( 0, 0, 3 )
 collision_mask = 3
 
-[node name="raycast_f_left" type="RayCast" parent="spatial"]
-transform = Transform( 42.4264, 0, 0.707107, 0, 1, 0, -42.4264, 0, 0.707107, 0, 1, 3.126 )
+[node name="raycast_left" type="RayCast" parent="spatial"]
+transform = Transform( -2.62268e-06, 0, 1, 0, 1, 0, -60, 0, -4.37114e-08, 1.48619, 1, -1.08589 )
 enabled = true
 cast_to = Vector3( 0, 0, 3 )
 collision_mask = 3
 
-[node name="raycast_f_right" type="RayCast" parent="spatial"]
-transform = Transform( 42.4264, 0, -0.707107, 0, 1, 0, 42.4264, 0, 0.707107, 0, 1, 3.126 )
+[node name="raycast_right" type="RayCast" parent="spatial"]
+transform = Transform( 7.15493e-07, 0, -1, 0, 1, 0, 60, 0, 1.19249e-08, -1.486, 1, -1.15397 )
 enabled = true
 cast_to = Vector3( 0, 0, 3 )
 collision_mask = 3
