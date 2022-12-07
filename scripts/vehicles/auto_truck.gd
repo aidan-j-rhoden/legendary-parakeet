@@ -122,6 +122,7 @@ var prev_engine_RPM = 0.0
 onready var raycast_front = $spatial/raycast_front
 onready var raycast_left = $spatial/raycast_left
 onready var raycast_right = $spatial/raycast_right
+var mult = 1
 
 onready var animation_player = $animation_player
 
@@ -143,6 +144,14 @@ func _ready():
 
 
 func _physics_process(delta):
+	raycast_front.set_rotation_degrees(raycast_front.get_rotation_degrees() + Vector3(0, delta * mult * 300, 0))
+	print(raycast_front.get_rotation_degrees())
+#	print(delta)
+	if raycast_front.get_rotation_degrees() <= Vector3(0, -90, 0):
+		mult = 1
+	elif raycast_front.get_rotation_degrees() >= Vector3(0, 90, 0):
+		mult = -1
+
 	var target = choose_target()
 	if is_network_master(): #prob doesn't matter
 		process_drive(delta)
