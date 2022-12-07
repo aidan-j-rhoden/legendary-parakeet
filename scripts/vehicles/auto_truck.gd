@@ -144,7 +144,7 @@ func _ready():
 
 
 func _physics_process(delta):
-	raycast_front.set_rotation_degrees(raycast_front.get_rotation_degrees() + Vector3(0, delta * mult * 300, 0))
+	raycast_front.set_rotation_degrees(raycast_front.get_rotation_degrees() + Vector3(0, delta * mult * 200, 0))
 	print(raycast_front.get_rotation_degrees())
 #	print(delta)
 	if raycast_front.get_rotation_degrees() <= Vector3(0, -90, 0):
