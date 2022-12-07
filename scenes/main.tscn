@@ -185,6 +185,9 @@ transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 4.08353, 5.41368, -8.45401 )
 [node name="glock" parent="weapons" instance=ExtResource( 4 )]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -1.44143, -0.09903, -17.7662 )
 
+[node name="glock_3" parent="weapons" instance=ExtResource( 4 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 19.8385, -0.09903, -17.7662 )
+
 [node name="truck" parent="." instance=ExtResource( 5 )]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -2.87661, 0.595084, 0.674341 )
 
