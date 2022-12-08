@@ -1,7 +1,7 @@
 extends Spatial
 class_name Weapon
 
-export var ray_length = 1000
+export var ray_length = 250
 export var knockback_multiplier = 15
 export var fire_delay = 0.1
 export var bullets = 1
@@ -110,8 +110,11 @@ remotesync func fire():
 			if not result.empty():
 				if result.collider is Player:
 					shooter.get_node("audio/hit").play()
-					result.collider.rpc("hit", DAMAGE, (result.position - global_transform.origin).normalized() * knockback_multiplier)
+#					result.collider.rpc("hit", DAMAGE, (result.position - global_transform.origin).normalized() * knockback_multiplier) #Should this line even be here?
 					result.collider.rpc("hurt", DAMAGE)
+					var position = result.position - result.collider.global_transform.origin
+					var impulse = (result.position - global_transform.origin).normalized()
+					result.collider.apply_impulse(position, impulse * knockback_multiplier)
 					rpc("create_impact", scn_wound, scn_blood_fx, result, shooter.camera.global_transform.basis.z)
 				if result.collider is RigidBody:
 					var position = result.position - result.collider.global_transform.origin

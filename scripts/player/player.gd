@@ -381,7 +381,7 @@ func process_movement(delta):
 	if (vel.length() - prev_vel.length()) < -40:
 		#die()
 		rpc("die")
-	
+
 	prev_vel = vel
 
 	# Network
