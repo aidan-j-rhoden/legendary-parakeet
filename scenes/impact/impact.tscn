@@ -20,5 +20,4 @@ size = Vector2( 0.25, 0.25 )
 script = ExtResource( 3 )
 
 [node name="mesh" type="MeshInstance" parent="."]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.00549217 )
 mesh = SubResource( 2 )
