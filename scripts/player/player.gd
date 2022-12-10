@@ -566,3 +566,6 @@ remotesync func respawn():
 	vel = Vector3()
 	global_transform.origin = main_scn.get_node("spawn_points").get_child(randi() % main_scn.get_node("spawn_points").get_child_count()).global_transform.origin
 	visible = true
+	for i in self.get_children():
+		if i is Wound:
+			i.queue_free()

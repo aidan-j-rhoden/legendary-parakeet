@@ -145,8 +145,6 @@ func _ready():
 
 func _physics_process(delta):
 	raycast_front.set_rotation_degrees(raycast_front.get_rotation_degrees() + Vector3(0, delta * mult * 200, 0))
-	print(raycast_front.get_rotation_degrees())
-#	print(delta)
 	if raycast_front.get_rotation_degrees() <= Vector3(0, -90, 0):
 		mult = 1
 	elif raycast_front.get_rotation_degrees() >= Vector3(0, 90, 0):
@@ -169,14 +167,15 @@ func _process(_delta):
 		animation_player.stop(true)
 
 
-func choose_target() -> Vector3:
-	var dis_to_target
-	for i in gamestate.players:
-		if i == driver:
-			pass
-		if global_transform.origin.distance_to(i) < dis_to_target:
-			dis_to_target = i
-	return dis_to_target
+func choose_target():
+	pass
+#	var dis_to_target = Vector3.ZERO
+#	for i in gamestate.players:
+#		if i == driver:
+#			pass
+#		if global_transform.origin.distance_to(i) < dis_to_target:
+#			dis_to_target = i
+#	return dis_to_target
 
 
 func check_for_obsticles():

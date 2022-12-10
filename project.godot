@@ -18,10 +18,16 @@ _global_script_classes=[ {
 "class": "Weapon",
 "language": "GDScript",
 "path": "res://scripts/weapons/weapon.gd"
+}, {
+"base": "Spatial",
+"class": "Wound",
+"language": "GDScript",
+"path": "res://scripts/impact/impact.gd"
 } ]
 _global_script_class_icons={
 "Player": "",
-"Weapon": ""
+"Weapon": "",
+"Wound": ""
 }
 
 [application]

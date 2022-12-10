@@ -5,7 +5,7 @@ export var ray_length = 250
 export var knockback_multiplier = 15
 export var fire_delay = 0.1
 export var bullets = 1
-export(float, 0, 100, 5) var spread = 0
+export var spread = 5
 export var DAMAGE = 10
 export var fov = 60
 var timer_fire = 0
@@ -108,14 +108,18 @@ remotesync func fire():
 			var space_state = get_world().direct_space_state
 			var result = space_state.intersect_ray(from, to, [self, shooter])
 			if not result.empty():
+				print(result.collider)
 				if result.collider is Player:
 					shooter.get_node("audio/hit").play()
 #					result.collider.rpc("hit", DAMAGE, (result.position - global_transform.origin).normalized() * knockback_multiplier) #Should this line even be here?
 					result.collider.rpc("hurt", DAMAGE)
-					var position = result.position - result.collider.global_transform.origin
-					var impulse = (result.position - global_transform.origin).normalized()
-					result.collider.apply_impulse(position, impulse * knockback_multiplier)
+#					var position = result.position - result.collider.global_transform.origin
+#					var impulse = (result.position - global_transform.origin).normalized()
+#					result.collider.apply_impulse(position, impulse * knockback_multiplier)
 					rpc("create_impact", scn_wound, scn_blood_fx, result, shooter.camera.global_transform.basis.z)
+				if result.collider is KinematicBody and result.collider.get_parent() is VehicleBody:
+					rpc("create_impact", scn_wound, scn_blood_fx, result, shooter.camera.global_transform.basis.z)
+					result.collider.rpc("hurt", DAMAGE)
 				if result.collider is RigidBody:
 					var position = result.position - result.collider.global_transform.origin
 					var impulse = (result.position - global_transform.origin).normalized()
@@ -223,7 +227,7 @@ remotesync func drop():
 	is_reloading = false
 	get_parent().remove_child(self)
 	main_scn.add_child(self)
-	self.global_transform.origin = shooter.global_transform.origin + shooter.shape_orientation.basis.z * 2.0
+	self.global_transform.origin = shooter.global_transform.origin + shooter.shape_orientation.basis.z * 3.0
 	if shooter.is_network_master():
 		get_node("hud/ammo").visible = false
 	shooter.equipped_weapon = null

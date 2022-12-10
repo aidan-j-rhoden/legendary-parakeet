@@ -117,7 +117,6 @@ font_data = ExtResource( 9 )
 [node name="glock" type="Spatial"]
 script = ExtResource( 5 )
 knockback_multiplier = 5
-spread = 10.0
 
 [node name="skeleton" type="Skeleton" parent="."]
 bones/0/name = "root"
