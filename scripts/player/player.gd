@@ -524,6 +524,8 @@ remotesync func hurt(damage):
 
 remotesync func die():
 	if !is_dead:
+		if is_in_vehicle:
+			rpc("enter_vehicle")
 		hit_player.stream = body_splat
 		hit_player.play()
 

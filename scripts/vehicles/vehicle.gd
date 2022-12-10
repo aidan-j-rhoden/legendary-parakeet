@@ -122,7 +122,8 @@ var prev_engine_RPM = 0.0
 
 onready var turbo_timer = $turbo_timer
 var turbo_active = false
-
+onready var turbo_text = $hud/turbo
+onready var hud = $hud
 
 func _ready():
 	# Misc
@@ -142,12 +143,19 @@ func _ready():
 
 
 func _physics_process(delta):
+	turbo_text.text = ("Turbo: " + str(("%1.3f" % turbo_timer.time_left)))
+	if turbo_timer.time_left == 0.0:
+		turbo_text.add_color_override("font_color", Color(0, 255, 0))
+	else:
+		turbo_text.add_color_override("font_color", Color(255, 165, 0, 255))
 	if driver:
 		if is_network_master():
 			process_input(delta)
+		hud.visible = true
 	else:
 		throttle_val = 0.0
 		brake_val = 0.2
+		hud.visible = false
 
 	if is_network_master():
 		rpc("process_other_stuff", delta)
@@ -181,7 +189,6 @@ func process_input(delta):
 			steer_val = 1.0
 		elif Input.is_action_pressed("movement_right"):
 			steer_val = -1.0
-		#print(turbo_timer.time_left)
 		if Input.is_action_pressed("turbo") and turbo_timer.time_left <= 0:
 			turbo_active = true
 			turbo_timer.start()
