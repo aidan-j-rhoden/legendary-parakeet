@@ -1,9 +1,9 @@
 # Multiplayer Third Person Shooter
 
-Godot 3.2
+Godot 3.5.x
 =========
 
-**A multiplayer third person shooter example project for Godot 3.2 game engine.**
+**A multiplayer third person shooter example project for Godot 3.5.x game engine.**
 
 Features
 ========
