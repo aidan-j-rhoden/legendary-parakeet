@@ -105,9 +105,6 @@ anchor_bottom = 1.0
 margin_left = -280.0
 margin_bottom = 6.10352e-05
 script = ExtResource( 2 )
-__meta__ = {
-"_edit_use_anchors_": false
-}
 
 [node name="v_box_container" type="VBoxContainer" parent="settings"]
 anchor_right = 1.0
@@ -116,9 +113,6 @@ margin_left = 20.0
 margin_top = 20.0
 margin_right = -20.0
 margin_bottom = -20.0
-__meta__ = {
-"_edit_use_anchors_": false
-}
 
 [node name="label" type="Label" parent="settings/v_box_container"]
 margin_right = 240.0
@@ -157,6 +151,12 @@ margin_top = 102.0
 margin_right = 240.0
 margin_bottom = 122.0
 text = "Set"
+
+[node name="info" type="Button" parent="settings/v_box_container"]
+margin_top = 126.0
+margin_right = 240.0
+margin_bottom = 146.0
+text = "Info"
 
 [node name="players" type="Panel" parent="."]
 visible = false
@@ -211,6 +211,29 @@ margin_right = 41.5
 margin_bottom = 29.0
 size_flags_horizontal = 2
 size_flags_vertical = 2
+
+[node name="info_pop" type="AcceptDialog" parent="."]
+visible = true
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+margin_left = -93.0
+margin_top = -74.0
+margin_right = 100.0
+margin_bottom = 120.0
+size_flags_horizontal = 2
+size_flags_vertical = 2
+window_title = "Controls"
+dialog_text = "W/A/S/D: Movement
+Shift: Sprint
+Space: Jump/Brakes
+F: Enter vehicle
+G: Drop weaopn
+R: Reload weapon
+Right click: Hold/Toggle aim
+Left click: Fire
+J: Dance"
 
 [connection signal="pressed" from="connect/v_box_container/h_box_container2/host" to="." method="_on_host_pressed"]
 [connection signal="pressed" from="connect/v_box_container/h_box_container4/join" to="." method="_on_join_pressed"]
