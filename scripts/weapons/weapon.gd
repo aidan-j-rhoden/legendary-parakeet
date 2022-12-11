@@ -127,6 +127,8 @@ remotesync func fire():
 					rpc("create_impact", scn_impact, scn_impact_fx, result, shooter.camera.global_transform.basis.z)
 				if result.collider is StaticBody:
 					rpc("create_impact", scn_impact, scn_impact_fx, result, shooter.camera.global_transform.basis.z)
+				if result.collider is Gibs:
+					rpc("create_impact", scn_wound, scn_blood_fx, result, shooter.camera.global_transform.basis.z)
 
 
 # Reloading

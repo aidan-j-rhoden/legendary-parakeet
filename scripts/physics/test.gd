@@ -1,5 +1,7 @@
 extends RigidBody
 
+class_name Gibs
+
 var slide
 var hit
 var roll

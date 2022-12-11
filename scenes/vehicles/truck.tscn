@@ -274,7 +274,7 @@ wheel_radius = 0.65
 wheel_rest_length = 0.25
 wheel_friction_slip = 8.0
 suspension_travel = 0.5
-suspension_stiffness = 20.0
+suspension_stiffness = 50.0
 
 [node name="mesh" type="MeshInstance" parent="FR"]
 mesh = SubResource( 26 )
@@ -300,7 +300,7 @@ wheel_radius = 0.65
 wheel_rest_length = 0.25
 wheel_friction_slip = 8.0
 suspension_travel = 0.5
-suspension_stiffness = 20.0
+suspension_stiffness = 50.0
 
 [node name="mesh" type="MeshInstance" parent="FL"]
 mesh = SubResource( 27 )
@@ -327,7 +327,7 @@ wheel_radius = 0.65
 wheel_rest_length = 0.25
 wheel_friction_slip = 5.0
 suspension_travel = 0.5
-suspension_stiffness = 50.0
+suspension_stiffness = 80.0
 
 [node name="mesh" type="MeshInstance" parent="RR"]
 mesh = SubResource( 28 )
@@ -353,7 +353,7 @@ wheel_radius = 0.65
 wheel_rest_length = 0.25
 wheel_friction_slip = 5.0
 suspension_travel = 0.5
-suspension_stiffness = 50.0
+suspension_stiffness = 80.0
 
 [node name="mesh" type="MeshInstance" parent="RL"]
 mesh = SubResource( 29 )
@@ -399,8 +399,8 @@ doppler_tracking = 2
 
 [node name="tunes" type="AudioStreamPlayer3D" parent="audio"]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.45088, 0.690187 )
-unit_db = 4.0
-unit_size = 2.5
+unit_db = 2.0
+unit_size = 1.8
 max_db = 5.0
 
 [node name="turbo_timer" type="Timer" parent="."]

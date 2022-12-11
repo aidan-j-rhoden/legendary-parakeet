@@ -156,8 +156,9 @@ func _init():
 
 func _physics_process(delta):
 	if is_network_master():
-		process_input(delta)
-		if !is_in_vehicle:
+		if not is_dead:
+			process_input(delta)
+		if !is_in_vehicle and not is_dead:
 			process_movement(delta)
 		rpc_unreliable("process_animations", is_in_vehicle, is_grounded, is_climbing, is_dancing, is_aiming, weapon_equipped, hvel.length(), camera_x_rot, camera_y_rot)
 		rpc("check_weapons")
@@ -374,7 +375,7 @@ func process_movement(delta):
 	air_player.unit_size = vel.length() / 30
 	if !air_player.playing:
 		air_player.play()
-	
+
 	if (vel.length() - prev_vel.length()) < -20:
 		#hurt(50)
 		rpc("hurt", 50)
@@ -537,13 +538,14 @@ remotesync func die():
 #		fov_initial = camera.fov
 #		crosshair.modulate.a = 0.0
 
-		# Gibs
 		visible = false
-		var gibs = gibs_scn.instance()
-		main_scn.add_child(gibs)
-		gibs.global_transform.origin = global_transform.origin
-		for c in gibs.get_children():
-			c.apply_impulse(global_transform.origin, c.global_transform.origin - global_transform.origin * 1.1)
+		if not falling_to_death:
+			# Gibs
+			var gibs = gibs_scn.instance()
+			main_scn.add_child(gibs)
+			gibs.global_transform.origin = global_transform.origin
+			for c in gibs.get_children():
+				c.apply_impulse(global_transform.origin, c.global_transform.origin - global_transform.origin * 1.1)
 
 		is_dead = true
 		get_node("timer_respawn").start()

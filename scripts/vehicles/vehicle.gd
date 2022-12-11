@@ -151,7 +151,7 @@ func _ready():
 
 
 func _physics_process(delta):
-	turbo_text.text = ("Turbo: " + str(("%1.3f" % turbo_timer.time_left)))
+	turbo_text.text = ("Turbo: " + str(("%1.2f" % turbo_timer.time_left)))
 	if turbo_timer.time_left == 0.0:
 		turbo_text.add_color_override("font_color", Color(0, 255, 0))
 	else:
@@ -170,6 +170,10 @@ func _physics_process(delta):
 	
 	if turbo_timer.time_left <= 7.8:
 		turbo_active = false
+
+	if global_transform.origin.y < -12:
+		yield(get_tree().create_timer(10), "timeout")
+		self.queue_free()
 
 
 func process_input(delta):
@@ -205,11 +209,17 @@ func process_input(delta):
 		if turbo_active == true and turbo_timer.time_left >= 7.8:
 			throttle_val *= 2
 		if Input.is_action_just_pressed("tunes"):
-			if not tunes_player.playing:
-				tunes_player.stream = tunes[song]
-				tunes_player.play()
-			else:
-				tunes_player.stop()
+			if not tunes_player.playing: #If the player is not playing a song
+				if tunes_player.stream_paused: #If paused
+					tunes_player.stream_paused = false #Unpause it
+				else: #Load a new song and play it
+					tunes_player.stream = tunes[song]
+					tunes_player.play()
+			else: #Since it is playing a song, pause that song
+				if tunes_player.stream_paused:
+					tunes_player.stream_paused = false
+				else:
+					tunes_player.stream_paused = true
 		if Input.is_action_just_pressed("next_tune") and tunes_player.playing:
 			song += 1
 			if song >= tunes.size():

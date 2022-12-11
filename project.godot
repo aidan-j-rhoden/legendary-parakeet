@@ -9,6 +9,11 @@
 config_version=4
 
 _global_script_classes=[ {
+"base": "RigidBody",
+"class": "Gibs",
+"language": "GDScript",
+"path": "res://scripts/physics/test.gd"
+}, {
 "base": "KinematicBody",
 "class": "Player",
 "language": "GDScript",
@@ -25,6 +30,7 @@ _global_script_classes=[ {
 "path": "res://scripts/impact/impact.gd"
 } ]
 _global_script_class_icons={
+"Gibs": "",
 "Player": "",
 "Weapon": "",
 "Wound": ""
