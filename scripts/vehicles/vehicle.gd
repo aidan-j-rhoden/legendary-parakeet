@@ -210,13 +210,11 @@ func process_input(delta):
 			else:
 				tunes_player.stop()
 		if Input.is_action_just_pressed("next_tune") and tunes_player.playing:
-			song += 1
-			clamp(song, 0, 1)
+			song = clamp(1, 0, tunes.size())
 			tunes_player.stream = tunes[song]
 			tunes_player.play()
 		if Input.is_action_just_pressed("prev_tune") and tunes_player.playing:
-			song -= 1
-			clamp(song, 0, 1)
+			song = clamp(-1, 0, tunes.size())
 			tunes_player.stream = tunes[song]
 			tunes_player.play()
 
