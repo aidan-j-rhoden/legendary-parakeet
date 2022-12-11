@@ -27,6 +27,7 @@ var brakes_player
 var air_player
 var collision_player
 var slide_player
+onready var tunes_player = $audio/tunes
 
 var idle_sound = preload("res://sounds/vehicles/truck/idle.wav")
 var engine_sound = preload("res://sounds/vehicles/truck/idle.wav")
@@ -47,6 +48,12 @@ var collision_sound = [
 var slide_sound = preload("res://sounds/vehicles/truck/body_slide.wav")
 var slide_player_unit_db = 0.0
 var slide_player_unit_db_target = 0.0
+
+var tunes = [
+	preload("res://sounds/tunes/Finish_Line.mp3"),
+	preload("res://sounds/tunes/140714_018.mp3")
+]
+var song = 0
 
 # Wheels
 onready var wheels = {
@@ -196,6 +203,22 @@ func process_input(delta):
 			turbo_player.play()
 		if turbo_active == true and turbo_timer.time_left >= 7.8:
 			throttle_val *= 2
+		if Input.is_action_just_pressed("tunes"):
+			if not tunes_player.playing:
+				tunes_player.stream = tunes[song]
+				tunes_player.play()
+			else:
+				tunes_player.stop()
+		if Input.is_action_just_pressed("next_tune") and tunes_player.playing:
+			song += 1
+			clamp(song, 0, 1)
+			tunes_player.stream = tunes[song]
+			tunes_player.play()
+		if Input.is_action_just_pressed("prev_tune") and tunes_player.playing:
+			song -= 1
+			clamp(song, 0, 1)
+			tunes_player.stream = tunes[song]
+			tunes_player.play()
 
 
 master func process_other_stuff(delta):

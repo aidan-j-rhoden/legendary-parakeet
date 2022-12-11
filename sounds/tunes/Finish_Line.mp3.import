@@ -1,0 +1,15 @@
+[remap]
+
+importer="mp3"
+type="AudioStreamMP3"
+path="res://.import/Finish_Line.mp3-81ae8cadab97877cb52bcf45ab322be8.mp3str"
+
+[deps]
+
+source_file="res://sounds/tunes/Finish_Line.mp3"
+dest_files=[ "res://.import/Finish_Line.mp3-81ae8cadab97877cb52bcf45ab322be8.mp3str" ]
+
+[params]
+
+loop=true
+loop_offset=0
