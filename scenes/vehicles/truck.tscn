@@ -399,8 +399,8 @@ doppler_tracking = 2
 
 [node name="tunes" type="AudioStreamPlayer3D" parent="audio"]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.45088, 0.690187 )
-unit_db = 5.0
-unit_size = 3.0
+unit_db = 4.0
+unit_size = 2.5
 max_db = 5.0
 
 [node name="turbo_timer" type="Timer" parent="."]
