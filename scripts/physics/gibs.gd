@@ -1,5 +1,7 @@
 extends RigidBody
 
+class_name Gibs
+
 var slide
 var hit
 var roll
@@ -58,6 +60,7 @@ func process_stuff():
 
 	if slide:
 		if bodies.size() > 0 and lvl > 0.15:
+			
 			slide.pitch_scale = 1
 
 			if !slide.playing:

@@ -41,7 +41,6 @@ particle_scn = ExtResource( 7 )
 
 [node name="mesh" type="MeshInstance" parent="."]
 mesh = SubResource( 1 )
-material/0 = null
 
 [node name="collision_shape" type="CollisionShape" parent="."]
 shape = SubResource( 2 )

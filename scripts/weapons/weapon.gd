@@ -120,14 +120,17 @@ remotesync func fire():
 				if result.collider is KinematicBody and result.collider.get_parent() is VehicleBody:
 					rpc("create_impact", scn_wound, scn_blood_fx, result, shooter.camera.global_transform.basis.z)
 					result.collider.rpc("hurt", DAMAGE)
-				if result.collider is RigidBody:
+				if result.collider is RigidBody and not result.collider is Gibs:
 					var position = result.position - result.collider.global_transform.origin
 					var impulse = (result.position - global_transform.origin).normalized()
 					result.collider.apply_impulse(position, impulse * 10)
 					rpc("create_impact", scn_impact, scn_impact_fx, result, shooter.camera.global_transform.basis.z)
-				if result.collider is StaticBody:
+				if result.collider is StaticBody and not result.collider is Gibs:
 					rpc("create_impact", scn_impact, scn_impact_fx, result, shooter.camera.global_transform.basis.z)
 				if result.collider is Gibs:
+					var position = result.position - result.collider.global_transform.origin
+					var impulse = (result.position - global_transform.origin).normalized()
+					result.collider.apply_impulse(position, impulse * 8)
 					rpc("create_impact", scn_wound, scn_blood_fx, result, shooter.camera.global_transform.basis.z)
 
 
