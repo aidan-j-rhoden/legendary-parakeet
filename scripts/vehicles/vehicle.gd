@@ -51,9 +51,10 @@ var slide_player_unit_db_target = 0.0
 
 var tunes = [
 	preload("res://sounds/tunes/Finish_Line.mp3"),
-	preload("res://sounds/tunes/140714_018.mp3")
+	preload("res://sounds/tunes/140714_018.mp3"),
+	preload("res://sounds/tunes/Dead_Man_Walking.mp3")
 ]
-var song = 0
+var song = 2
 
 # Wheels
 onready var wheels = {
@@ -210,11 +211,15 @@ func process_input(delta):
 			else:
 				tunes_player.stop()
 		if Input.is_action_just_pressed("next_tune") and tunes_player.playing:
-			song = clamp(1, 0, tunes.size())
+			song += 1
+			if song >= tunes.size():
+				song = 0
 			tunes_player.stream = tunes[song]
 			tunes_player.play()
 		if Input.is_action_just_pressed("prev_tune") and tunes_player.playing:
-			song = clamp(-1, 0, tunes.size())
+			song -= 1
+			if song < 0:
+				song = tunes.size() - 1
 			tunes_player.stream = tunes[song]
 			tunes_player.play()
 
