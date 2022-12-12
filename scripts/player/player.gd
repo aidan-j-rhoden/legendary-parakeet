@@ -50,6 +50,11 @@ var crosshair_color_initial : Color
 var fov_initial
 var fov
 
+#HUD
+var health_bar: ProgressBar
+var kill_counter: Label
+var kill_count = 0
+
 # Force
 const GRAB_DISTANCE = 50
 const THROW_FORCE = 100
@@ -93,22 +98,24 @@ var equipped_weapon
 
 func _ready():
 	shape = get_node("shape")
-	
+
 	camera = get_node("camera_base/rotation/target/camera")
 	target = get_node("camera_base/rotation/target")
 	crosshair = get_node("hud/crosshair")
-	
+	kill_counter = $hud/kill_count
+	health_bar = $hud/health
+
 	camera_target_initial = target.transform.origin
 	crosshair_color_initial = crosshair.modulate
 	fov_initial = camera.fov
-	
+
 	# For facing direction
 	shape_orientation = shape.global_transform
-	
+
 	# Animations
 	animation_tree = get_node("shape/cube/animation_tree")
 	animation_state_machine = animation_tree["parameters/playback"]
-	
+
 	# Sounds
 	air_player = get_node("audio/air")
 	air_sound = preload("res://sounds/physics/wind.wav")
@@ -129,22 +136,22 @@ func _ready():
 	body_splat = preload("res://sounds/physics/body_splat.wav")
 	voice_player = get_node("audio/voice")
 	pain_sound = preload("res://sounds/pain/pain.wav")
-	
+
 	# Gibs
 	gibs_scn = preload("res://models/characters/gibs.tscn")
 	main_scn = get_tree().root.get_child(get_tree().root.get_child_count() - 1)
-	
+
 	# Health
 	set_health(100)
-	
+
 	# Rays
 	ray_ground = get_node("shape/rays/ground")
 	ray_ledge_front = get_node("shape/rays/ledge_front")
 	ray_ledge_top = get_node("shape/rays/ledge_top")
 	ray_vehicles = get_node("shape/rays/vehicles")
-	
+
 	get_node("timer_respawn").connect("timeout", self, "_on_timer_respawn_timeout")
-	
+
 	if is_network_master():
 		camera.current = true
 		crosshair.visible = true
@@ -155,6 +162,8 @@ func _init():
 
 
 func _physics_process(delta):
+	health_bar.value = health
+	kill_counter.text = str(kill_count)
 	if is_network_master():
 		if not is_dead:
 			process_input(delta)
@@ -525,6 +534,7 @@ remotesync func hurt(damage):
 
 remotesync func die():
 	if !is_dead:
+		kill_count -= 1
 		if is_in_vehicle:
 			rpc("enter_vehicle")
 		hit_player.stream = body_splat
