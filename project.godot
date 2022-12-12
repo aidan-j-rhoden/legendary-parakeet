@@ -57,6 +57,8 @@ window/stretch/aspect="expand"
 [global]
 
 definition=false
+icon=false
+project=false
 
 [input]
 
