@@ -6677,7 +6677,7 @@ nodes/pistol_aim_right/node = SubResource( 56 )
 nodes/pistol_aim_right/position = Vector2( 280, 1360 )
 nodes/pistol_aim_up/node = SubResource( 57 )
 nodes/pistol_aim_up/position = Vector2( 800, 1300 )
-node_connections = [ "output", 0, "pistol_aim_blend", "pistol_aim_dir_y_blend", 0, "pistol_aim_left", "pistol_aim_dir_y_blend", 1, "pistol_aim_center", "pistol_aim_dir_y_blend", 2, "pistol_aim_right", "pistol_aim_blend", 0, "aim_blend", "pistol_aim_blend", 1, "pistol_aim_dir_x_blend", "pistol_aim_dir_x_blend", 0, "pistol_aim_down", "pistol_aim_dir_x_blend", 1, "pistol_aim_dir_y_blend", "pistol_aim_dir_x_blend", 2, "pistol_aim_up", "aim_dir_x_blend", 0, "aim_down", "aim_dir_x_blend", 1, "aim_dir_y_blend", "aim_dir_x_blend", 2, "aim_up", "aim_dir_y_blend", 0, "aim_left", "aim_dir_y_blend", 1, "aim_center", "aim_dir_y_blend", 2, "aim_right", "aim_blend", 0, "locomotion", "aim_blend", 1, "aim_dir_x_blend" ]
+node_connections = [ "output", 0, "pistol_aim_blend", "aim_blend", 0, "locomotion", "aim_blend", 1, "aim_dir_x_blend", "pistol_aim_dir_y_blend", 0, "pistol_aim_left", "pistol_aim_dir_y_blend", 1, "pistol_aim_center", "pistol_aim_dir_y_blend", 2, "pistol_aim_right", "aim_dir_y_blend", 0, "aim_left", "aim_dir_y_blend", 1, "aim_center", "aim_dir_y_blend", 2, "aim_right", "aim_dir_x_blend", 0, "aim_down", "aim_dir_x_blend", 1, "aim_dir_y_blend", "aim_dir_x_blend", 2, "aim_up", "pistol_aim_dir_x_blend", 0, "pistol_aim_down", "pistol_aim_dir_x_blend", 1, "pistol_aim_dir_y_blend", "pistol_aim_dir_x_blend", 2, "pistol_aim_up", "pistol_aim_blend", 0, "aim_blend", "pistol_aim_blend", 1, "pistol_aim_dir_x_blend" ]
 
 [sub_resource type="AnimationNodeAnimation" id=59]
 animation = "car_drive"
@@ -6804,7 +6804,7 @@ shape = SubResource( 1 )
 transform = Transform( 0.3, 0, 0, 0, -4.88762e-08, -0.3, 0, 0.3, -4.88762e-08, 0, 4.37114e-08, -1 )
 
 [node name="root" type="Spatial" parent="shape/cube"]
-transform = Transform( 0.994916, 0.0477894, -0.0886438, -0.0412091, 0.996359, 0.0746338, 0.0918878, -0.0706014, 0.993263, -0.108279, -0.0269502, 0.219089 )
+transform = Transform( 0.993478, 0.0536402, -0.100615, -0.0478635, 0.997111, 0.0589771, 0.103487, -0.0537767, 0.993176, -0.108858, -0.0286132, 0.159493 )
 
 [node name="mesh" type="MeshInstance" parent="shape/cube/root"]
 transform = Transform( 1, -9.77889e-09, 1.49012e-08, 1.39698e-09, 1, -3.72529e-09, 7.45058e-09, 0, 1, 0, 0, 0 )
@@ -6902,7 +6902,7 @@ bones/17/name = "hand_r"
 bones/17/parent = 16
 bones/17/rest = Transform( 0.991121, 0.00369525, 0.132912, -0.0701962, 0.863497, 0.499444, -0.112924, -0.50434, 0.85609, -1.02084e-13, 0.689231, 6.80894e-08 )
 bones/17/enabled = true
-bones/17/bound_children = [ NodePath("bone_attachment") ]
+bones/17/bound_children = [  ]
 bones/18/name = "thumb_r"
 bones/18/parent = 17
 bones/18/rest = Transform( -0.632063, 0.398428, -0.664644, -0.518779, 0.419574, 0.744867, 0.575643, 0.815605, -0.0585012, 0.182822, 0.136526, 0.0192021 )
@@ -6975,7 +6975,7 @@ bones/31/enabled = true
 bones/31/bound_children = [  ]
 
 [node name="bone_attachment" type="BoneAttachment" parent="shape/cube/root/skeleton"]
-transform = Transform( 0.486659, 0.0773478, 0.87016, 0.0204209, -0.996808, 0.0771834, 0.873355, -0.0197926, -0.486687, -1.26172, 3.05479, 0.275375 )
+transform = Transform( 0.477064, 0.0747359, 0.875684, 0.0272174, -0.997157, 0.070274, 0.878448, -0.00969143, -0.477743, -1.2845, 3.08708, 0.262288 )
 bone_name = "hand_r"
 
 [node name="weapon" type="Spatial" parent="shape/cube/root/skeleton/bone_attachment"]
