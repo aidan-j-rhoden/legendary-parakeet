@@ -162,6 +162,8 @@ func _init():
 
 
 func _physics_process(delta):
+	if not is_dead and Input.is_action_just_pressed("damage"): #Debug only
+		rpc("hurt", 10)
 	health_bar.value = health
 	kill_counter.text = str(kill_count)
 	if is_network_master():

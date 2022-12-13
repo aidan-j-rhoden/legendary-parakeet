@@ -1,4 +1,4 @@
-[gd_scene load_steps=89 format=2]
+[gd_scene load_steps=91 format=2]
 
 [ext_resource path="res://scripts/player/player.gd" type="Script" id=1]
 [ext_resource path="res://models/characters/cube.material" type="Material" id=2]
@@ -6775,6 +6775,21 @@ graph_offset = Vector2( -206.54, 37.8125 )
 radius = 0.125
 height = 0.25
 
+[sub_resource type="StyleBoxFlat" id=87]
+bg_color = Color( 0, 0.223529, 0.823529, 1 )
+border_width_left = 1
+border_width_top = 1
+border_width_bottom = 1
+border_color = Color( 0, 0, 0, 1 )
+
+[sub_resource type="StyleBoxFlat" id=86]
+bg_color = Color( 0.67451, 0.67451, 0.67451, 1 )
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color( 0, 0, 0, 1 )
+
 [sub_resource type="DynamicFont" id=84]
 size = 28
 font_data = ExtResource( 4 )
@@ -6804,7 +6819,7 @@ shape = SubResource( 1 )
 transform = Transform( 0.3, 0, 0, 0, -4.88762e-08, -0.3, 0, 0.3, -4.88762e-08, 0, 4.37114e-08, -1 )
 
 [node name="root" type="Spatial" parent="shape/cube"]
-transform = Transform( 0.993478, 0.0536402, -0.100615, -0.0478635, 0.997111, 0.0589771, 0.103487, -0.0537767, 0.993176, -0.108858, -0.0286132, 0.159493 )
+transform = Transform( 0.994939, 0.0485203, -0.0879902, -0.0420645, 0.996386, 0.0737959, 0.0912528, -0.0697212, 0.993384, -0.108722, -0.0270409, 0.212793 )
 
 [node name="mesh" type="MeshInstance" parent="shape/cube/root"]
 transform = Transform( 1, -9.77889e-09, 1.49012e-08, 1.39698e-09, 1, -3.72529e-09, 7.45058e-09, 0, 1, 0, 0, 0 )
@@ -6902,7 +6917,7 @@ bones/17/name = "hand_r"
 bones/17/parent = 16
 bones/17/rest = Transform( 0.991121, 0.00369525, 0.132912, -0.0701962, 0.863497, 0.499444, -0.112924, -0.50434, 0.85609, -1.02084e-13, 0.689231, 6.80894e-08 )
 bones/17/enabled = true
-bones/17/bound_children = [  ]
+bones/17/bound_children = [ NodePath("bone_attachment") ]
 bones/18/name = "thumb_r"
 bones/18/parent = 17
 bones/18/rest = Transform( -0.632063, 0.398428, -0.664644, -0.518779, 0.419574, 0.744867, 0.575643, 0.815605, -0.0585012, 0.182822, 0.136526, 0.0192021 )
@@ -6975,7 +6990,7 @@ bones/31/enabled = true
 bones/31/bound_children = [  ]
 
 [node name="bone_attachment" type="BoneAttachment" parent="shape/cube/root/skeleton"]
-transform = Transform( 0.477064, 0.0747359, 0.875684, 0.0272174, -0.997157, 0.070274, 0.878448, -0.00969143, -0.477743, -1.2845, 3.08708, 0.262288 )
+transform = Transform( 0.486499, 0.0776616, 0.870222, 0.018251, -0.996728, 0.0787469, 0.873492, -0.0224279, -0.486326, -1.26179, 3.05446, 0.267297 )
 bone_name = "hand_r"
 
 [node name="weapon" type="Spatial" parent="shape/cube/root/skeleton/bone_attachment"]
@@ -7138,6 +7153,8 @@ margin_left = 19.0
 margin_top = 17.0
 margin_right = 176.0
 margin_bottom = 39.0
+custom_styles/fg = SubResource( 87 )
+custom_styles/bg = SubResource( 86 )
 value = 1.0
 rounded = true
 percent_visible = false
