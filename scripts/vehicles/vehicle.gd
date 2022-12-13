@@ -342,6 +342,8 @@ func process_sounds():
 	if bodies.size() > 0 and abs(prev_lvl - lvl) > 5:
 		for b in bodies:
 			if b is Player:
+				if driver:
+					driver.kill_count += 1
 				b.rpc("die")
 
 	if bodies.size() > 0 and abs(prev_lvl - lvl) > 0.5:
