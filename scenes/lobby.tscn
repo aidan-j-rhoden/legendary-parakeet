@@ -213,21 +213,29 @@ size_flags_horizontal = 2
 size_flags_vertical = 2
 
 [node name="info_pop" type="AcceptDialog" parent="."]
+visible = true
 anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-margin_left = -93.0
-margin_top = -74.0
-margin_right = 100.0
-margin_bottom = 120.0
+margin_left = -94.892
+margin_top = -156.142
+margin_right = 98.108
+margin_bottom = 156.858
 size_flags_horizontal = 2
 size_flags_vertical = 2
 window_title = "Controls"
 dialog_text = "W/A/S/D: Movement
-Shift: Sprint
-Space: Jump/Brakes
+    Shift: Sprint
+    Space: Jump
+
 F: Enter vehicle
+    W/A/S/D: Drive
+        Space: Brakes
+        C: Toggle radio
+        N: Next song
+        P: Previous song
+
 G: Drop weaopn
 R: Reload weapon
 Right click: Hold/Toggle aim
