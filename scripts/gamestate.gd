@@ -14,6 +14,9 @@ var players = {}
 
 var round_time = 300
 
+#The main scene
+var main
+
 # Signals to let lobby GUI know what's going on
 signal player_list_changed()
 signal connection_failed()
@@ -77,7 +80,7 @@ remote func unregister_player(id):
 
 remote func pre_start_game(spawn_points):
 	# Change scene
-	var main = load("res://scenes/main.tscn").instance()
+	main = load("res://scenes/main.tscn").instance()
 	get_tree().get_root().add_child(main)
 
 	get_tree().get_root().get_node("lobby").hide()
@@ -163,6 +166,7 @@ func end_game():
 	if has_node("/root/world"): # Game is in progress
 		# End it
 		get_node("/root/world").queue_free()
+		get_tree().get_root().get_node(main).queue_free()
 
 	emit_signal("game_ended")
 	players.clear()

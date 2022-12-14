@@ -59,7 +59,7 @@ func _on_game_ended():
 	Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)
 	get_node("connect").show()
 	get_node("players").hide()
-	get_node("connect/host").disabled = false
+	get_node("connect/v_box_container/h_box_container2/host").disabled = false
 
 
 func _on_game_error(errtxt):
