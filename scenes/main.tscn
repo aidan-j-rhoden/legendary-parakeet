@@ -1,4 +1,4 @@
-[gd_scene load_steps=7 format=2]
+[gd_scene load_steps=8 format=2]
 
 [ext_resource path="res://models/maps/map.tscn" type="PackedScene" id=1]
 [ext_resource path="res://scenes/props/barrel.tscn" type="PackedScene" id=2]
@@ -6,8 +6,10 @@
 [ext_resource path="res://scenes/weapons/glock.tscn" type="PackedScene" id=4]
 [ext_resource path="res://scenes/vehicles/truck.tscn" type="PackedScene" id=5]
 [ext_resource path="res://scenes/vehicles/auto_truck.tscn" type="PackedScene" id=6]
+[ext_resource path="res://scripts/main.gd" type="Script" id=7]
 
 [node name="main" type="Spatial"]
+script = ExtResource( 7 )
 
 [node name="directional_light" type="DirectionalLight" parent="."]
 transform = Transform( 1, 0, 0, 0, 0.5, 0.866025, 0, -0.866025, 0.5, 0, 20.1836, 12 )
@@ -198,4 +200,11 @@ transform = Transform( 0.192333, 0, -0.98133, 0, 1, 0, 0.98133, 0, 0.192333, 35.
 transform = Transform( 0.62606, 0, 0.779775, 0, 1, 0, -0.779775, 0, 0.62606, -20.9929, 0.595084, 134.718 )
 
 [node name="truck_auto" parent="." instance=ExtResource( 6 )]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 16.1433, -0.0579181, 6.06323 )
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 20.3472, -0.0579181, 6.06323 )
+
+[node name="game_timer" type="Timer" parent="."]
+wait_time = 300.0
+one_shot = true
+autostart = true
+
+[connection signal="timeout" from="game_timer" to="." method="_on_game_timer_timeout"]

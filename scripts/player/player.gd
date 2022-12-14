@@ -54,6 +54,7 @@ var fov
 var health_bar: ProgressBar
 var kill_counter: Label
 var kill_count = 0
+var game_timer_label: Label
 
 # Force
 const GRAB_DISTANCE = 50
@@ -104,6 +105,7 @@ func _ready():
 	crosshair = get_node("hud/crosshair")
 	kill_counter = $hud/kill_count
 	health_bar = $hud/health
+	game_timer_label = $hud/game_timer_label
 
 	camera_target_initial = target.transform.origin
 	crosshair_color_initial = crosshair.modulate
@@ -166,6 +168,7 @@ func _physics_process(delta):
 		rpc("hurt", 10)
 	health_bar.value = health
 	kill_counter.text = str(kill_count)
+	game_timer_label.text = get_time_left()
 	if is_network_master():
 		if not is_dead:
 			process_input(delta)
@@ -568,6 +571,17 @@ func set_health(value):
 	if health <= 0:
 		#die()
 		rpc("die")
+
+
+func get_time_left():
+	var time: String
+	var time_seconds: String
+	time_seconds = str(("%1.0f" % main_scn.get_node("game_timer").time_left))
+	var result = (int(time_seconds) / 60)
+	var result2 = int(time_seconds) - (result * 60)
+	if result2 < 10:
+		result2 = "0" + str(result2)
+	return str(result) + ":" + str(result2)
 
 
 # Respawn

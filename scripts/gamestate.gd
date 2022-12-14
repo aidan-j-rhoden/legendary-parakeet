@@ -12,6 +12,8 @@ var player_name = "Billy Bob Joe"
 # Names for remote players in id:name format
 var players = {}
 
+var round_time = 300
+
 # Signals to let lobby GUI know what's going on
 signal player_list_changed()
 signal connection_failed()
@@ -173,3 +175,11 @@ func _ready():
 	get_tree().connect("connected_to_server", self, "_connected_ok")
 	get_tree().connect("connection_failed", self, "_connected_fail")
 	get_tree().connect("server_disconnected", self, "_server_disconnected")
+
+
+func set_time(time):
+	round_time = time
+
+
+func game_time():
+	return int(round_time)

@@ -146,16 +146,24 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="button" type="Button" parent="settings/v_box_container"]
+[node name="round_time" type="LineEdit" parent="settings/v_box_container"]
 margin_top = 102.0
 margin_right = 240.0
-margin_bottom = 122.0
+margin_bottom = 126.0
+text = "300"
+max_length = 3
+placeholder_text = "Set your game time (seconds):"
+
+[node name="button" type="Button" parent="settings/v_box_container"]
+margin_top = 130.0
+margin_right = 240.0
+margin_bottom = 150.0
 text = "Set"
 
 [node name="info" type="Button" parent="settings/v_box_container"]
-margin_top = 126.0
+margin_top = 154.0
 margin_right = 240.0
-margin_bottom = 146.0
+margin_bottom = 174.0
 text = "Info"
 
 [node name="players" type="Panel" parent="."]
@@ -244,4 +252,5 @@ J: Dance"
 
 [connection signal="pressed" from="connect/v_box_container/h_box_container2/host" to="." method="_on_host_pressed"]
 [connection signal="pressed" from="connect/v_box_container/h_box_container4/join" to="." method="_on_join_pressed"]
+[connection signal="text_changed" from="settings/v_box_container/round_time" to="." method="_on_round_time_text_changed"]
 [connection signal="pressed" from="players/start" to="." method="_on_start_pressed"]
