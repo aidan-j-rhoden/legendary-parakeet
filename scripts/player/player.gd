@@ -438,7 +438,8 @@ remotesync func enter_vehicle():
 					vehicle = ray_vehicles.get_collider()
 					get_parent().remove_child(self)
 					vehicle.add_child(self)
-					shape.disabled = true
+					self.add_collision_exception_with(vehicle)
+#					shape.disabled = true
 
 					if vehicle.driver == null:
 						global_transform.origin = vehicle.transform.origin + vehicle.transform.basis.x * 0.5 + vehicle.transform.basis.y * 1.75
@@ -454,6 +455,7 @@ remotesync func enter_vehicle():
 					camera.clip_to_bodies = false
 	else:
 		if vehicle.name != "truck_auto":
+			self.remove_collision_exception_with(vehicle)
 			animation_state_machine.travel("blend_tree")
 			get_parent().remove_child(self)
 			main_scn.add_child(self)
