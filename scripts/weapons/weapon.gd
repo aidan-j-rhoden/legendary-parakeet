@@ -109,7 +109,7 @@ remotesync func fire():
 			var result = space_state.intersect_ray(from, to, [self, shooter])
 			if not result.empty():
 				print(result.collider)
-				if result.collider is Player:
+				if result.collider is Player and not result.collider.is_in_vehicle:
 					shooter.get_node("audio/hit").play()
 #					result.collider.rpc("hit", DAMAGE, (result.position - global_transform.origin).normalized() * knockback_multiplier) #Should this line even be here?
 					if result.collider.health <= DAMAGE and not result.collider.is_dead:
