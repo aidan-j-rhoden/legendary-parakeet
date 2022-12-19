@@ -50,9 +50,9 @@ var slide_player_unit_db = 0.0
 var slide_player_unit_db_target = 0.0
 
 var tunes = [
-	preload("res://sounds/tunes/Finish_Line.mp3"),
+	#preload("res://sounds/tunes/Finish_Line.mp3"),
 	preload("res://sounds/tunes/140714_018.mp3"),
-	preload("res://sounds/tunes/Dead_Man_Walking.mp3")
+	#preload("res://sounds/tunes/Dead_Man_Walking.mp3")
 ]
 var song = 2
 
