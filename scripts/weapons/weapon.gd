@@ -216,6 +216,8 @@ remotesync func pick():
 	if shooter != null:
 		if shooter is Player and !shooter.is_dead and is_pickable:
 			if shooter.equipped_weapon == null:
+				var current_ammo = ammo
+				var current_ammo_supply = ammo_supply
 				is_pickable = false
 				var weapon_container = shooter.get_node("shape/cube/root/skeleton/bone_attachment/weapon")
 				# get_parent().remove_child(self)
@@ -225,6 +227,8 @@ remotesync func pick():
 				weapon_copy.shooter = shooter
 				weapon_copy.set_state(PICKED)
 				shooter.weapon_equipped = true
+				weapon_copy.set_ammo(current_ammo)
+				weapon_copy.set_ammo_supply(current_ammo_supply)
 				if shooter.is_network_master():
 					weapon_copy.get_node("hud/ammo").visible = true
 					weapon_copy.get_node("audio/ammo").play()
@@ -234,9 +238,13 @@ remotesync func pick():
 # Drop weapon
 remotesync func drop():
 	is_reloading = false
+	var current_ammo = ammo
+	var current_ammo_supply = ammo_supply
 	get_parent().remove_child(self)
 	main_scn.add_child(self)
 	self.global_transform.origin = shooter.global_transform.origin + shooter.shape_orientation.basis.z * 3.0
+	set_ammo(current_ammo)
+	set_ammo_supply(current_ammo_supply)
 	if shooter.is_network_master():
 		get_node("hud/ammo").visible = false
 	shooter.equipped_weapon = null
