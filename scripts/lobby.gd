@@ -10,6 +10,15 @@ func _ready():
 	gamestate.connect("game_error", self, "_on_game_error")
 
 
+func _physics_process(delta):
+	if $players.visible:
+		if get_tree().is_network_server():
+			if all_players_ready():
+				$players/start.disabled = false
+			else:
+				$players/start.disabled = true
+
+
 func _on_host_pressed():
 	if get_node("connect/v_box_container/h_box_container2/name").text == "":
 		get_node("connect/v_box_container/h_box_container5/error_label").text = "Invalid name!"
@@ -84,3 +93,7 @@ func _on_start_pressed():
 
 func _on_round_time_text_changed(new_text):
 	gamestate.set_time(int($settings/v_box_container/round_time.text))
+
+
+func all_players_ready():
+	return true
