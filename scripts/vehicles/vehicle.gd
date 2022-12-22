@@ -50,11 +50,11 @@ var slide_player_unit_db = 0.0
 var slide_player_unit_db_target = 0.0
 
 var tunes = [
-	#preload("res://sounds/tunes/Finish_Line.mp3"),
-	preload("res://sounds/tunes/140714_018.mp3"),
-	#preload("res://sounds/tunes/Dead_Man_Walking.mp3")
+	#[preload("res://sounds/tunes/Finish_Line.mp3"), 2],
+	[preload("res://sounds/tunes/140714_018.mp3"), 6],
+	#[preload("res://sounds/tunes/Dead_Man_Walking.mp3"), 2]
 ]
-var song = 2
+var song = 0
 
 # Wheels
 onready var wheels = {
@@ -213,7 +213,8 @@ func process_input(delta):
 				if tunes_player.stream_paused: #If paused
 					tunes_player.stream_paused = false #Unpause it
 				else: #Load a new song and play it
-					tunes_player.stream = tunes[song]
+					tunes_player.stream = tunes[song][0]
+					tunes_player.unit_db = tunes[song][1]
 					tunes_player.play()
 			else: #Since it is playing a song, pause that song
 				if tunes_player.stream_paused:
@@ -224,7 +225,8 @@ func process_input(delta):
 			song += 1
 			if song >= tunes.size():
 				song = 0
-			tunes_player.stream = tunes[song]
+			tunes_player.stream = tunes[song][0]
+			tunes_player.unit_db = song[1]
 			tunes_player.play()
 		if Input.is_action_just_pressed("prev_tune") and tunes_player.playing:
 			song -= 1
