@@ -401,7 +401,7 @@ doppler_tracking = 2
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.45088, 0.690187 )
 unit_db = 2.0
 unit_size = 1.8
-max_db = 5.0
+max_db = 6.0
 
 [node name="turbo_timer" type="Timer" parent="."]
 wait_time = 8.0
