@@ -1,4 +1,4 @@
-[gd_scene load_steps=8 format=2]
+[gd_scene load_steps=9 format=2]
 
 [ext_resource path="res://models/maps/map.tscn" type="PackedScene" id=1]
 [ext_resource path="res://scenes/props/barrel.tscn" type="PackedScene" id=2]
@@ -7,6 +7,7 @@
 [ext_resource path="res://scenes/vehicles/truck.tscn" type="PackedScene" id=5]
 [ext_resource path="res://scenes/vehicles/auto_truck.tscn" type="PackedScene" id=6]
 [ext_resource path="res://scripts/main.gd" type="Script" id=7]
+[ext_resource path="res://scenes/weapons/huntingRifle.tscn" type="PackedScene" id=8]
 
 [node name="main" type="Spatial"]
 script = ExtResource( 7 )
@@ -180,6 +181,9 @@ transform = Transform( 0.361445, 0, 0.932393, 0, 1, 0, -0.932393, 0, 0.361445, 5
 transform = Transform( 0.361445, 0, 0.932393, 0, 1, 0, -0.932393, 0, 0.361445, 5.94154, 3.11849, -1.26881 )
 
 [node name="weapons" type="Node" parent="."]
+
+[node name="SniperOther" parent="weapons" instance=ExtResource( 8 )]
+transform = Transform( 0.23, 0, 0, 0, 0.23, 0, 0, 0, 0.23, 0.891379, 0.961935, 4.32339 )
 
 [node name="glock_2" parent="weapons" instance=ExtResource( 4 )]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 4.08353, 5.41368, -8.45401 )

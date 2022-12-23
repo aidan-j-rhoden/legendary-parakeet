@@ -1,4 +1,4 @@
-[gd_scene load_steps=27 format=2]
+[gd_scene load_steps=39 format=2]
 
 [ext_resource path="res://models/weapons/SniperOther.glb" type="PackedScene" id=1]
 [ext_resource path="res://models/weapons/Gold_001.material" type="Material" id=2]
@@ -15,6 +15,12 @@
 [ext_resource path="res://models/weapons/GoldYellow_002.material" type="Material" id=13]
 [ext_resource path="res://models/weapons/Barrely-Dark.material" type="Material" id=14]
 [ext_resource path="res://models/weapons/Gold_003.material" type="Material" id=15]
+[ext_resource path="res://scripts/weapons/huntingRifle.gd" type="Script" id=16]
+[ext_resource path="res://textures/fx/muzzle_flash.png" type="Texture" id=17]
+[ext_resource path="res://fonts/Roboto-Medium.ttf" type="DynamicFontData" id=18]
+[ext_resource path="res://sounds/weapons/ammo.wav" type="AudioStream" id=19]
+[ext_resource path="res://sounds/weapons/glock/reload.wav" type="AudioStream" id=20]
+[ext_resource path="res://sounds/weapons/glock/fire.wav" type="AudioStream" id=21]
 
 [sub_resource type="ArrayMesh" id=7]
 resource_name = "SniperOther_Scope_Cube005-Mesh"
@@ -276,6 +282,7 @@ surfaces/0 = {
 
 [sub_resource type="Animation" id=12]
 resource_name = "fire"
+length = 0.9
 step = 0.05
 tracks/0/type = "transform"
 tracks/0/path = NodePath("Body_Cube/spatial")
@@ -285,8 +292,55 @@ tracks/0/imported = false
 tracks/0/enabled = true
 tracks/0/keys = PoolRealArray( 0, 1, -1.25148, 0.66085, -0.0770314, 0, 0, 0, 1, 1, 1, 1, 0.2, 1, -1.25148, 0.66085, -0.0770314, -0.635654, 0, 0, 0.771974, 1, 1, 1, 0.3, 1, -1.25148, 0.66085, -0.0770314, -0.635654, 0, 0, 0.771974, 1, 1, 1, 0.5, 1, -2.27077, 0.66085, -0.0770314, -0.635654, 0, 0, 0.771974, 1, 1, 1, 0.6, 1, -2.27077, 0.66085, -0.0770314, -0.635654, 0, 0, 0.771974, 1, 1, 1, 0.8, 1, -1.25148, 0.66085, -0.0770314, -0.635654, 0, 0, 0.771974, 1, 1, 1, 0.9, 1, -1.25148, 0.66085, -0.0770314, 0, 0, 0, 1, 1, 1, 1 )
 
+[sub_resource type="Animation" id=15]
+resource_name = "idle"
+tracks/0/type = "transform"
+tracks/0/path = NodePath("Body_Cube")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = PoolRealArray( 0, 1, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1 )
+
+[sub_resource type="Animation" id=13]
+resource_name = "reload"
+length = 0.7
+step = 0.05
+tracks/0/type = "transform"
+tracks/0/path = NodePath("Body_Cube/Bullets(Mag)_Cylinder005")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = PoolRealArray( 0, 1, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 0.25, 1, 0, -0.618321, 0, 0, 0, 0, 1, 1, 1, 1, 0.5, 1, 0, -0.618321, 0, 0, 0, 0, 1, 1, 1, 1, 0.7, 1, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1 )
+tracks/1/type = "transform"
+tracks/1/path = NodePath("Body_Cube/Mag_Cube007")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/keys = PoolRealArray( 0, 1, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 0.25, 1, 0, -0.618, 0, 0, 0, 0, 1, 1, 1, 1, 0.5, 1, 0, -0.618, 0, 0, 0, 0, 1, 1, 1, 1, 0.7, 1, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1 )
+
+[sub_resource type="SpatialMaterial" id=16]
+flags_transparent = true
+flags_unshaded = true
+params_cull_mode = 2
+albedo_texture = ExtResource( 17 )
+
+[sub_resource type="QuadMesh" id=17]
+material = SubResource( 16 )
+size = Vector2( 0.64, 0.64 )
+
+[sub_resource type="SphereShape" id=18]
+radius = 7.11391
+
+[sub_resource type="DynamicFont" id=19]
+size = 32
+font_data = ExtResource( 18 )
+
 [node name="SniperOther" instance=ExtResource( 1 )]
 transform = Transform( 0.23, 0, 0, 0, 0.23, 0, 0, 0, 0.23, 0, 0, 0 )
+script = ExtResource( 16 )
 
 [node name="Scope_Cube005" type="MeshInstance" parent="Body_Cube" index="0"]
 mesh = SubResource( 7 )
@@ -334,3 +388,84 @@ skeleton = NodePath("../..")
 
 [node name="animation_player" type="AnimationPlayer" parent="." index="1"]
 anims/fire = SubResource( 12 )
+anims/idle = SubResource( 15 )
+anims/reload = SubResource( 13 )
+
+[node name="PullBack_Cylinder003" parent="." index="2"]
+visible = false
+
+[node name="Bullet_Cylinder004" parent="." index="3"]
+visible = false
+
+[node name="Barrel_Cube004" parent="." index="4"]
+visible = false
+
+[node name="Lens1_Sphere001" parent="." index="5"]
+visible = false
+
+[node name="Lens2_Sphere002" parent="." index="6"]
+visible = false
+
+[node name="Scope_Cube005" parent="." index="7"]
+visible = false
+
+[node name="TriggerFrame_Cube001" parent="." index="8"]
+visible = false
+
+[node name="Trigger_Cube003" parent="." index="9"]
+visible = false
+
+[node name="Bullets(Mag)_Cylinder005" parent="." index="10"]
+visible = false
+
+[node name="Mag_Cube007" parent="." index="11"]
+visible = false
+
+[node name="flash" type="MeshInstance" parent="." index="12"]
+transform = Transform( -4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, 6.84852, 0.667872, -0.109728 )
+visible = false
+mesh = SubResource( 17 )
+
+[node name="light" type="OmniLight" parent="flash" index="0"]
+transform = Transform( 4.34783, 0, -1.42109e-14, 0, 4.34783, 0, 1.42109e-14, 0, 4.34783, 7.45058e-09, 0, -0.0900002 )
+light_color = Color( 1, 0.92549, 0.74902, 1 )
+light_energy = 2.0
+omni_range = 3.98396
+
+[node name="area" type="Area" parent="." index="13"]
+
+[node name="collision_shape" type="CollisionShape" parent="area" index="0"]
+shape = SubResource( 18 )
+
+[node name="hud" type="CanvasLayer" parent="." index="14"]
+
+[node name="ammo" type="Label" parent="hud" index="0"]
+visible = false
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_left = -240.0
+margin_top = -60.0
+custom_colors/font_color = Color( 1, 0.647059, 0, 1 )
+custom_fonts/font = SubResource( 19 )
+text = "AMMO: 5/5"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="audio" type="Spatial" parent="." index="15"]
+
+[node name="fire" type="AudioStreamPlayer3D" parent="audio" index="0"]
+transform = Transform( 4.34783, 0, 0, 0, 4.34783, 0, 0, 0, 4.34783, 6.98651, 0.687953, -0.146945 )
+stream = ExtResource( 21 )
+unit_db = 10.0
+max_db = 6.0
+
+[node name="reload" type="AudioStreamPlayer3D" parent="audio" index="1"]
+transform = Transform( 4.34783, 0, 0, 0, 4.34783, 0, 0, 0, 4.34783, -0.888916, 0.674715, 0 )
+stream = ExtResource( 20 )
+
+[node name="ammo" type="AudioStreamPlayer3D" parent="audio" index="2"]
+transform = Transform( 4.34783, 0, 0, 0, 4.34783, 0, 0, 0, 4.34783, -0.232799, 0.0666922, 0 )
+stream = ExtResource( 19 )
