@@ -38,8 +38,9 @@ _global_script_class_icons={
 
 [application]
 
-config/name="TPS MP"
+config/name="Server"
 run/main_scene="res://scenes/lobby.tscn"
+boot_splash/show_image=false
 boot_splash/bg_color=Color( 0.141176, 0.141176, 0.141176, 1 )
 config/icon="res://icon.png"
 
@@ -178,5 +179,6 @@ name_casing=2
 
 [rendering]
 
+quality/driver/driver_name="GLES2"
 quality/filters/use_fxaa=true
 environment/default_environment="res://default_env.tres"

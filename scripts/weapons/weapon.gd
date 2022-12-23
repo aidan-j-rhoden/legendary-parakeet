@@ -155,19 +155,19 @@ remotesync func reload():
 		is_reloading = false
 
 
-remotesync func create_impact(scn, scn_fx, result, from):
-	var impact = scn.instance()
-	result.collider.add_child(impact)
-	impact.global_transform.origin = result.position
-	impact.global_transform = utils.look_at_with_z(impact.global_transform, result.normal, from)
-	randomize()
-	impact.rotation = Vector3(impact.rotation.x, impact.rotation.y, rand_range(-180, 180))
-
-	var impact_fx = scn_fx.instance()
-	get_tree().root.add_child(impact_fx)
-	impact_fx.global_transform.origin = result.position
-	impact_fx.emitting = true
-	impact_fx.global_transform = utils.look_at_with_x(impact_fx.global_transform, result.normal, from)
+#remotesync func create_impact(scn, scn_fx, result, from):
+#	var impact = scn.instance()
+#	result.collider.add_child(impact)
+#	impact.global_transform.origin = result.position
+#	impact.global_transform = utils.look_at_with_z(impact.global_transform, result.normal, from)
+#	randomize()
+#	impact.rotation = Vector3(impact.rotation.x, impact.rotation.y, rand_range(-180, 180))
+#
+#	var impact_fx = scn_fx.instance()
+#	get_tree().root.add_child(impact_fx)
+#	impact_fx.global_transform.origin = result.position
+#	impact_fx.emitting = true
+#	impact_fx.global_transform = utils.look_at_with_x(impact_fx.global_transform, result.normal, from)
 
 
 func set_ammo(value):
