@@ -4,7 +4,6 @@ extends Spatial
 func _ready():
 	var timer = $game_timer
 	timer.set_wait_time(gamestate.game_time())
-	print(timer.time_left)
 	timer.start()
 
 

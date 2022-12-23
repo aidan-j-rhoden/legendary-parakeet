@@ -6,9 +6,6 @@ const DEFAULT_PORT = 27015
 # Max number of players
 const MAX_PEERS = 12
 
-# Name for my player
-var player_name = "Billy Bob Joe"
-
 # Names for remote players in id:name format
 var players = {}
 
@@ -32,42 +29,22 @@ func _player_connected(_id): # Callback from SceneTree
 
 
 func _player_disconnected(id): # Callback from SceneTree
-	if get_tree().is_network_server():
-		if has_node("/root/world"): # Game is in progress
-			emit_signal("game_error", "Player " + players[id] + " disconnected")
-			end_game()
-		else: # Game is not in progress
-			# If we are the server, send to the new dude all the already registered players
-			unregister_player(id)
-			for p_id in players:
-				# Erase in the server
-				rpc_id(p_id, "unregister_player", id)
-
-
-func _connected_ok(): # Callback from SceneTree, only for clients (not server)
-	# Registration of a client beings here, tell everyone that we are here
-	rpc("register_player", get_tree().get_network_unique_id(), player_name)
-	emit_signal("connection_succeeded")
-
-
-func _server_disconnected(): # Callback from SceneTree, only for clients (not server)
-	emit_signal("game_error", "Server disconnected")
-	end_game()
-
-
-func _connected_fail(): # Callback from SceneTree, only for clients (not server)
-	get_tree().set_network_peer(null) # Remove peer
-	emit_signal("connection_failed")
+	if has_node("/root/world"): # Game is in progress
+		emit_signal("game_error", "Player " + players[id] + " disconnected.")
+		end_game()
+	else: # Game is not in progres.
+		unregister_player(id)
+		for p_id in players:
+			# Erase in the server
+			rpc_id(p_id, "unregister_player", id)
 
 
 # Lobby management functions
 remote func register_player(id, new_player_name):
-	if get_tree().is_network_server():
-		# If we are the server, let everyone know about the new player
-		rpc_id(id, "register_player", 1, player_name) # Send myself to new dude
-		for p_id in players: # Then, for each remote player
-			rpc_id(id, "register_player", p_id, players[p_id]) # Send player to new dude
-			rpc_id(p_id, "register_player", id, new_player_name) # Send new dude to player
+#	rpc_id(id, "register_player", 1, player_name) # Send myself to new dude
+	for p_id in players: # Then, for each remote player
+		rpc_id(id, "register_player", p_id, players[p_id]) # Send each player to new dude
+		rpc_id(p_id, "register_player", id, new_player_name) # Send new dude to each player
 
 	players[id] = new_player_name
 	emit_signal("player_list_changed")
@@ -94,13 +71,10 @@ remote func pre_start_game(spawn_points):
 		player.set_name(str(p_id)) # Use unique ID as node name
 		player.set_network_master(p_id) #set unique id as master
 		player.global_transform.origin = spawn_pos
-		
+
 		main.get_node("players").add_child(player)
 
-	if not get_tree().is_network_server():
-		# Tell server we are ready to start
-		rpc_id(1, "ready_to_start", get_tree().get_network_unique_id())
-	elif players.size() == 0:
+	if players.size() == 0:
 		post_start_game()
 
 
@@ -123,17 +97,9 @@ remote func ready_to_start(id):
 		post_start_game()
 
 
-func host_game(new_player_name):
-	player_name = new_player_name
+func host_game():
 	var host = NetworkedMultiplayerENet.new()
 	host.create_server(DEFAULT_PORT, MAX_PEERS)
-	get_tree().set_network_peer(host)
-
-
-func join_game(ip, new_player_name):
-	player_name = new_player_name
-	var host = NetworkedMultiplayerENet.new()
-	host.create_client(ip, DEFAULT_PORT)
 	get_tree().set_network_peer(host)
 
 
@@ -141,17 +107,12 @@ func get_player_list():
 	return players.values()
 
 
-func get_player_name():
-	return player_name
-
-
 func begin_game():
 	assert(get_tree().is_network_server())
 
 	# Create a dictionary with peer id and respective spawn points, could be improved by randomizing
 	var spawn_points = {}
-	spawn_points[1] = 0 # Server in spawn point 0
-	var spawn_point_idx = 1
+	var spawn_point_idx = 0
 	for p in players:
 		spawn_points[p] = spawn_point_idx
 		spawn_point_idx += 1
