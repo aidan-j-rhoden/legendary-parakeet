@@ -8,6 +8,7 @@ const MAX_PEERS = 12
 
 # Names for remote players in id:name format
 var players = {}
+var starter
 
 var round_time = 300
 
@@ -23,8 +24,6 @@ signal game_error(what)
 
 
 func _player_connected(_id): # Callback from SceneTree
-	# This is not used in this demo, because _connected_ok is called for clients
-	# on success and will do the job.
 	pass
 
 
@@ -41,6 +40,7 @@ func _player_disconnected(id): # Callback from SceneTree
 
 # Lobby management functions
 remote func register_player(id, new_player_name):
+	print("regestered player: " + new_player_name)
 #	rpc_id(id, "register_player", 1, player_name) # Send myself to new dude
 	for p_id in players: # Then, for each remote player
 		rpc_id(id, "register_player", p_id, players[p_id]) # Send each player to new dude
@@ -48,6 +48,8 @@ remote func register_player(id, new_player_name):
 
 	players[id] = new_player_name
 	emit_signal("player_list_changed")
+	if players.size() == 1:
+		starter = new_player_name
 
 
 remote func unregister_player(id):

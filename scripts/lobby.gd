@@ -95,6 +95,11 @@ func _on_start_pressed():
 	gamestate.begin_game()
 
 
+mastersync func start_game(id):
+	if id == gamestate.starter:
+		gamestate.begin_game()
+
+
 func _on_round_time_text_changed(new_text):
 	gamestate.set_time(int($settings/v_box_container/round_time.text))
 
