@@ -4,7 +4,7 @@ extends Node
 const DEFAULT_PORT = 27015
 
 # Max number of players
-const MAX_PEERS = 12
+const MAX_PEERS = 4
 
 # Names for remote players in id:name format
 var players = {}
@@ -59,23 +59,23 @@ remote func unregister_player(id):
 
 remote func pre_start_game(spawn_points):
 	# Change scene
-	main = load("res://scenes/main.tscn").instance()
-	get_tree().get_root().add_child(main)
-#	get_tree().get_root().get_node("main").hide()
-
-	#get_tree().get_root().get_node("lobby").hide()
-
-	var player_scene = load("res://scenes/player/player.tscn")
-
-	for p_id in spawn_points:
-		var spawn_pos = main.get_node("spawn_points/" + str(spawn_points[p_id])).global_transform.origin
-		var player = player_scene.instance()
-
-		player.set_name(str(p_id)) # Use unique ID as node name
-		player.set_network_master(p_id) #set unique id as master
-		player.global_transform.origin = spawn_pos
-
-		main.get_node("players").add_child(player)
+#	main = load("res://scenes/main.tscn").instance()
+#	get_tree().get_root().add_child(main)
+##	get_tree().get_root().get_node("main").hide()
+#
+#	#get_tree().get_root().get_node("lobby").hide()
+#
+#	var player_scene = load("res://scenes/player/player.tscn")
+#
+#	for p_id in spawn_points:
+#		var spawn_pos = main.get_node("spawn_points/" + str(spawn_points[p_id])).global_transform.origin
+#		var player = player_scene.instance()
+#
+#		player.set_name(str(p_id)) # Use unique ID as node name
+#		player.set_network_master(p_id) #set unique id as master
+#		player.global_transform.origin = spawn_pos
+#
+#		main.get_node("players").add_child(player)
 
 	if players.size() == 0:
 		post_start_game()
