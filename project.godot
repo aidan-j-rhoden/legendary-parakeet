@@ -48,7 +48,6 @@ config/icon="res://icon.png"
 
 utils="*res://scripts/utils.gd"
 gamestate="*res://scripts/gamestate.gd"
-Lobby="*res://scripts/lobby.gd"
 
 [display]
 
