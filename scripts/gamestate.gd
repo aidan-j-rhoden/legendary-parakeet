@@ -8,7 +8,7 @@ const MAX_PEERS = 4
 
 # Names for remote players in id:name format
 var players = {}
-var starter
+var starter # who gets to tell the server to start the game
 
 var round_time = 300
 
@@ -88,7 +88,7 @@ remote func post_start_game():
 var players_ready = []
 
 
-remote func ready_to_start(id):
+master func ready_to_start(id):
 	assert(get_tree().is_network_server())
 
 	if not id in players_ready:
@@ -96,8 +96,9 @@ remote func ready_to_start(id):
 
 	if players_ready.size() == players.size():
 		for p in players:
+			print(str(p) + " is ready!")
 			rpc_id(p, "post_start_game")
-		post_start_game()
+#		post_start_game()
 
 
 func host_game():
@@ -123,7 +124,7 @@ func begin_game():
 	for p in players:
 		rpc_id(p, "pre_start_game", spawn_points)
 
-	pre_start_game(spawn_points)
+#	pre_start_game(spawn_points)
 
 
 func end_game():

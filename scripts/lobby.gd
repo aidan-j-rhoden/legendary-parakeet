@@ -15,12 +15,12 @@ func _ready():
 	get_node("players").show()
 
 
-func _physics_process(delta):
-	if $players.visible:
-		if all_players_ready():
-			$players/start.disabled = false
-		else:
-			$players/start.disabled = true
+#func _physics_process(delta):
+#	if $players.visible:
+#		if all_players_ready():
+#			$players/start.disabled = false
+#		else:
+#			$players/start.disabled = true
 
 
 #func _on_host_pressed():
