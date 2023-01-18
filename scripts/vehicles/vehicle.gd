@@ -309,7 +309,7 @@ master func process_other_stuff(delta):
 	prev_pos = translation
 	prev_engine_RPM = engine_RPM
 
-	rpc_unreliable("update_trans_rot", translation, rotation, get_node("body").rotation, engine_force, steer_angle, engine_RPM)
+	rpc_unreliable("update_trans_rot", translation, rotation, get_node("body").rotation, driver, engine_force, steer_angle, engine_RPM)
 
 
 remote func update_applied_stuff(drv, en_f, st_angle, en_RPM):

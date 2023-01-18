@@ -532,7 +532,7 @@ remote func update_trans_rot(pos, rot, shape_rot):
 		shape.rotation = shape_rot
 	for player in gamestate.players:
 		if str(player) != id:
-			rpc_unreliable("update_trans_rot", translation, rotation, shape.rotation)
+			rpc_unreliable_id(player, "update_trans_rot", translation, rotation, shape.rotation)
 
 
 func play_random_footstep():

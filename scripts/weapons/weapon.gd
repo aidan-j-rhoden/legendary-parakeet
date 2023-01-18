@@ -220,19 +220,26 @@ remotesync func pick():
 				var current_ammo_supply = ammo_supply
 				is_pickable = false
 				var weapon_container = shooter.get_node("shape/cube/root/skeleton/bone_attachment/weapon")
-				# get_parent().remove_child(self)
-				var weapon_copy = self.duplicate(7)
-				weapon_container.add_child(weapon_copy)
-				weapon_copy.transform = Transform.IDENTITY
-				weapon_copy.shooter = shooter
-				weapon_copy.set_state(PICKED)
+				get_parent().remove_child(self)
+				weapon_container.add_child(self)
+				transform = Transform.IDENTITY
+				set_state(PICKED)
 				shooter.weapon_equipped = true
-				weapon_copy.set_ammo(current_ammo)
-				weapon_copy.set_ammo_supply(current_ammo_supply)
 				if shooter.is_network_master():
-					weapon_copy.get_node("hud/ammo").visible = true
-					weapon_copy.get_node("audio/ammo").play()
-				queue_free()
+					get_node("hud/ammo").visible = true
+					get_node("audio/ammo").play()
+#				var weapon_copy = self.duplicate(7)
+#				weapon_container.add_child(weapon_copy)
+#				weapon_copy.transform = Transform.IDENTITY
+#				weapon_copy.shooter = shooter
+#				weapon_copy.set_state(PICKED)
+#				shooter.weapon_equipped = true
+#				weapon_copy.set_ammo(current_ammo)
+#				weapon_copy.set_ammo_supply(current_ammo_supply)
+#				if shooter.is_network_master():
+#					weapon_copy.get_node("hud/ammo").visible = true
+#					weapon_copy.get_node("audio/ammo").play()
+#				queue_free()
 
 
 # Drop weapon
@@ -241,7 +248,7 @@ remotesync func drop():
 	var current_ammo = ammo
 	var current_ammo_supply = ammo_supply
 	get_parent().remove_child(self)
-	main_scn.add_child(self)
+	main_scn.get_node("weapons").add_child(self)
 	self.global_transform.origin = shooter.global_transform.origin + shooter.shape_orientation.basis.z * 3.0
 	set_ammo(current_ammo)
 	set_ammo_supply(current_ammo_supply)

@@ -33,11 +33,12 @@ func _player_disconnected(id): # Callback from SceneTree
 		end_game()
 	else: # Game is not in progres.
 		unregister_player(id)
-		for p_id in players:
-			# Erase in the server
-			rpc_id(p_id, "unregister_player", id)
 		if players.size() == 0:
 			end_game()
+		else:
+			for p_id in players:
+				# Erase in the server
+				rpc_id(p_id, "unregister_player", id)
 
 
 # Lobby management functions
