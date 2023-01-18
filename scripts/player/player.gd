@@ -328,7 +328,7 @@ func process_movement(delta):
 		is_grounded = true
 	else:
 		is_grounded = false
-	
+
 	# Movement
 	dir.y = 0
 	dir = dir.normalized()
@@ -384,23 +384,21 @@ func process_movement(delta):
 				global_transform.origin = ledge_point
 	else:
 		ray_ledge_top.enabled = false
-	
+
 	# Sounds
 	air_player.unit_size = vel.length() / 30
 	if !air_player.playing:
 		air_player.play()
 
 	if (vel.length() - prev_vel.length()) < -20:
-		#hurt(50)
 		rpc("hurt", 50)
 	if (vel.length() - prev_vel.length()) < -40:
-		#die()
 		rpc("die")
 
 	prev_vel = vel
 
 	# Network
-	rpc_unreliable("update_trans_rot", translation, rotation, shape.rotation)
+#	rpc_unreliable("update_trans_rot", translation, rotation, shape.rotation)
 
 
 # Check for weapons
@@ -477,6 +475,11 @@ remotesync func enter_vehicle():
 			vehicle = null
 			is_in_vehicle = false
 
+	var id = str(get_tree().get_rpc_sender_id())
+	for player in gamestate.players:
+		if str(player) != id:
+			rpc_id(player, "enter_vehicle")
+
 
 # Animations
 remotesync func process_animations(is_in_vehicle, is_grounded, is_climbing, is_dancing, is_aiming, pistol_equipped, hvel_length, camera_x_rot, camera_y_rot):
@@ -519,12 +522,17 @@ func set_is_climbing(value):
 remotesync func update_is_climbing(value):
 	is_climbing = value
 
-
+ 
 # Sync position and rotation in the network
-puppet func update_trans_rot(pos, rot, shape_rot):
-	translation = pos
-	rotation = rot
-	shape.rotation = shape_rot
+remote func update_trans_rot(pos, rot, shape_rot):
+	var id = str(get_tree().get_rpc_sender_id())
+	if self.get_name() == id:
+		translation = pos
+		rotation = rot
+		shape.rotation = shape_rot
+	for player in gamestate.players:
+		if str(player) != id:
+			rpc_unreliable("update_trans_rot", translation, rotation, shape.rotation)
 
 
 func play_random_footstep():

@@ -28,7 +28,7 @@ func _player_connected(_id): # Callback from SceneTree
 
 
 func _player_disconnected(id): # Callback from SceneTree
-	if has_node("/root/world"): # Game is in progress
+	if has_node("/root/world"): # Game is in progress (needs to be changed to /root/main to work, but I don't want it too)
 		emit_signal("game_error", "Player " + players[id] + " disconnected.")
 		end_game()
 	else: # Game is not in progres.
@@ -36,6 +36,8 @@ func _player_disconnected(id): # Callback from SceneTree
 		for p_id in players:
 			# Erase in the server
 			rpc_id(p_id, "unregister_player", id)
+		if players.size() == 0:
+			end_game()
 
 
 # Lobby management functions
@@ -59,23 +61,23 @@ remote func unregister_player(id):
 
 remote func pre_start_game(spawn_points):
 	# Change scene
-#	main = load("res://scenes/main.tscn").instance()
-#	get_tree().get_root().add_child(main)
-##	get_tree().get_root().get_node("main").hide()
-#
-#	#get_tree().get_root().get_node("lobby").hide()
-#
-#	var player_scene = load("res://scenes/player/player.tscn")
-#
-#	for p_id in spawn_points:
-#		var spawn_pos = main.get_node("spawn_points/" + str(spawn_points[p_id])).global_transform.origin
-#		var player = player_scene.instance()
-#
-#		player.set_name(str(p_id)) # Use unique ID as node name
-#		player.set_network_master(p_id) #set unique id as master
-#		player.global_transform.origin = spawn_pos
-#
-#		main.get_node("players").add_child(player)
+	main = load("res://scenes/main.tscn").instance()
+	get_tree().get_root().add_child(main)
+	get_tree().get_root().get_node("main").hide()
+
+	get_tree().get_root().get_node("lobby").hide()
+
+	var player_scene = load("res://scenes/player/player.tscn")
+
+	for p_id in spawn_points:
+		var spawn_pos = main.get_node("spawn_points/" + str(spawn_points[p_id])).global_transform.origin
+		var player = player_scene.instance()
+
+		player.set_name(str(p_id)) # Use unique ID as node name
+		player.set_network_master(p_id) #set unique id as master
+		player.global_transform.origin = spawn_pos
+
+		main.get_node("players").add_child(player)
 
 	if players.size() == 0:
 		post_start_game()
@@ -124,14 +126,14 @@ func begin_game():
 	for p in players:
 		rpc_id(p, "pre_start_game", spawn_points)
 
-#	pre_start_game(spawn_points)
+	pre_start_game(spawn_points)
 
 
 func end_game():
-	if has_node("/root/world"): # Game is in progress
+	if has_node("/root/main"): # Game is in progress
 		# End it
-		get_node("/root/world").queue_free()
-		get_tree().get_root().get_node(main).queue_free()
+		get_node("/root/main").queue_free()
+#		get_tree().get_root().get_node(main).queue_free()
 
 	emit_signal("game_ended")
 	players.clear()

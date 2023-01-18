@@ -74,6 +74,11 @@ func _on_game_ended():
 	get_node("players").hide()
 	get_node("connect/v_box_container/h_box_container2/host").disabled = false
 
+	gamestate.host_game() # Host a new game
+	refresh_lobby()
+	get_node("connect").hide()
+	get_node("players").show()
+
 
 func _on_game_error(errtxt):
 	get_node("error").dialog_text = errtxt
