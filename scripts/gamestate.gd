@@ -66,9 +66,11 @@ func register_player(id, new_player_name): # Lobby management functions
 		starter = new_player_name
 
 
-remote func unregister_player(id):
+func unregister_player(id):
 	players.erase(id)
 	emit_signal("player_list_changed")
+	if has_node("/root/main"):
+		get_node("/root/main/players/" + str(id)).queue_free()
 
 
 remote func pre_start_game(spawn_points):
@@ -142,14 +144,13 @@ func begin_game():
 
 
 func end_game():
+#	get_tree().set_network_peer(null) # Causes problems, but it seems necessary
 	if has_node("/root/main"): # Game is in progress
 		# End it
 		get_node("/root/main").queue_free()
-#		get_tree().get_root().get_node(main).queue_free()
 
 	emit_signal("game_ended")
 	players.clear()
-	get_tree().set_network_peer(null) # End networking
 
 
 func _ready():

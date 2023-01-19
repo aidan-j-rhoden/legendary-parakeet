@@ -92,7 +92,7 @@ func refresh_lobby():
 	for p in players:
 		get_node("players/list").add_item(p)
 
-	get_node("players/start").disabled = not get_tree().is_network_server()
+	get_node("players/start").disabled = false
 
 
 func _on_start_pressed():
