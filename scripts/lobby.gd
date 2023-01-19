@@ -89,7 +89,6 @@ func refresh_lobby():
 	var players = gamestate.get_player_list()
 	players.sort()
 	get_node("players/list").clear()
-#	get_node("players/list").add_item(gamestate.get_player_name() + " (You)")
 	for p in players:
 		get_node("players/list").add_item(p)
 

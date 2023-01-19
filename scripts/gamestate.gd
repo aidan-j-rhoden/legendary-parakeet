@@ -8,6 +8,7 @@ const MAX_PEERS = 4
 
 # Names for remote players in id:name format
 var players = {}
+var not_registered_players = []
 var starter # who gets to tell the server to start the game
 
 var round_time = 300
@@ -23,8 +24,20 @@ signal game_ended()
 signal game_error(what)
 
 
-func _player_connected(_id): # Callback from SceneTree
-	pass
+func _player_connected(id): # Callback from SceneTree
+#	var player_name = rpc_id(id, "get_name")
+#	print(player_name)
+#	register_player(id, player_name)
+	not_registered_players.append(id)
+
+
+master func player_set(name):
+	var sender = get_tree().get_rpc_sender_id()
+	for id in not_registered_players:
+		if id == sender:
+			register_player(sender, name)
+			not_registered_players.erase(sender)
+			break
 
 
 func _player_disconnected(id): # Callback from SceneTree
@@ -41,10 +54,8 @@ func _player_disconnected(id): # Callback from SceneTree
 				rpc_id(p_id, "unregister_player", id)
 
 
-# Lobby management functions
-remote func register_player(id, new_player_name):
+func register_player(id, new_player_name): # Lobby management functions
 	print("regestered player: " + new_player_name)
-#	rpc_id(id, "register_player", 1, player_name) # Send myself to new dude
 	for p_id in players: # Then, for each remote player
 		rpc_id(id, "register_player", p_id, players[p_id]) # Send each player to new dude
 		rpc_id(p_id, "register_player", id, new_player_name) # Send new dude to each player
