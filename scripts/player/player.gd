@@ -456,7 +456,7 @@ remotesync func enter_vehicle():
 			self.remove_collision_exception_with(vehicle)
 			animation_state_machine.travel("blend_tree")
 			get_parent().remove_child(self)
-			main_scn.add_child(self)
+			main_scn.get_node("players").add_child(self)
 			shape.disabled = false
 			camera.translation = Vector3(0, 0, 2)
 
