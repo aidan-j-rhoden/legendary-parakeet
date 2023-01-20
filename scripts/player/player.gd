@@ -551,7 +551,7 @@ remotesync func die():
 	if !is_dead:
 		kill_count -= 1
 		if is_in_vehicle:
-			rpc("enter_vehicle")
+			enter_vehicle()
 		hit_player.stream = body_splat
 		hit_player.play()
 
@@ -574,6 +574,10 @@ remotesync func die():
 
 		is_dead = true
 		get_node("timer_respawn").start()
+	var id = get_tree().get_rpc_sender_id()
+	for player in gamestate.players:
+		if player != id:
+			rpc_id(player, "die")
 
 
 func set_health(value):
