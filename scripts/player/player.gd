@@ -430,14 +430,17 @@ remotesync func enter_vehicle():
 					vehicle.driver = self
 					voice_player.stream = pain_sound #Temp
 					voice_player.play()
+					for player in gamestate.players:
+						rpc_id(player, "enter_vehicle")
 				else:
+					for player in gamestate.players:
+						rpc_id(player, "enter_vehicle")
 					#camera.translation = Vector3(0.5, -0.1, 0.2) #Edit this
 					camera.translation = Vector3(0, 0, 5)
 					vehicle = ray_vehicles.get_collider()
 					get_parent().remove_child(self)
 					vehicle.add_child(self)
 					self.add_collision_exception_with(vehicle)
-#					shape.disabled = true
 
 					if vehicle.driver == null:
 						global_transform.origin = vehicle.transform.origin + vehicle.transform.basis.x * 0.5 + vehicle.transform.basis.y * 1.75
@@ -445,7 +448,7 @@ remotesync func enter_vehicle():
 						global_transform.origin = vehicle.transform.origin + vehicle.transform.basis.x * -0.5 + vehicle.transform.basis.y * 1.75
 
 					vehicle.driver = self
-					vehicle.set_network_master(int(self.get_name()))
+#					vehicle.set_network_master(int(self.get_name()))
 					shape.rotation.y = vehicle.get_node("body").transform.basis.get_euler().y
 
 					is_in_vehicle = true
@@ -453,11 +456,12 @@ remotesync func enter_vehicle():
 					camera.clip_to_bodies = false
 	else:
 		if vehicle.name != "truck_auto":
+			for player in gamestate.players:
+				rpc_id(player, "enter_vehicle")
 			self.remove_collision_exception_with(vehicle)
 			animation_state_machine.travel("blend_tree")
 			get_parent().remove_child(self)
 			main_scn.get_node("players").add_child(self)
-			shape.disabled = false
 			camera.translation = Vector3(0, 0, 2)
 
 			global_transform.origin = vehicle.transform.origin + vehicle.transform.basis.x * 2 + vehicle.transform.basis.y * 1
@@ -474,11 +478,8 @@ remotesync func enter_vehicle():
 			vehicle.driver = null
 			vehicle = null
 			is_in_vehicle = false
-
-	var id = str(get_tree().get_rpc_sender_id())
-	for player in gamestate.players:
-		if str(player) != id:
-			rpc_id(player, "enter_vehicle")
+			for player in gamestate.players:
+				rpc_id(player, "enter_vehicle")
 
 
 # Animations
@@ -531,7 +532,7 @@ remote func update_trans_rot(pos, rot, shape_rot):
 		rotation = rot
 		shape.rotation = shape_rot
 	for player in gamestate.players:
-		if str(player) != id:
+		if player != id:
 			rpc_unreliable_id(player, "update_trans_rot", translation, rotation, shape.rotation)
 
 
@@ -583,12 +584,10 @@ remotesync func die():
 func set_health(value):
 	health = value
 	if health <= 0:
-		#die()
 		rpc("die")
 
 
 func get_time_left():
-	var time: String
 	var time_seconds: String
 	time_seconds = str(("%1.0f" % main_scn.get_node("game_timer").time_left))
 	var result = (int(time_seconds) / 60)
@@ -607,9 +606,12 @@ remotesync func respawn():
 	falling_to_death = false
 	is_dead = false
 	set_health(100)
-	vel = Vector3()
-	global_transform.origin = main_scn.get_node("spawn_points").get_child(randi() % main_scn.get_node("spawn_points").get_child_count()).global_transform.origin
+	vel = Vector3(0, 0, 0)
 	visible = true
 	for i in self.get_children():
 		if i is Wound:
 			i.queue_free()
+	var id = get_tree().get_rpc_sender_id()
+	for player in gamestate.players:
+		if id != player:
+			rpc_id(player, "respawn")
