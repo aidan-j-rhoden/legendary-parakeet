@@ -70,14 +70,16 @@ func unregister_player(id):
 	players.erase(id)
 	emit_signal("player_list_changed")
 	if has_node("/root/main"):
-		get_node("/root/main/players/" + str(id)).queue_free()
+		if has_node("/root/main/players/" + str(id)):
+			get_node("/root/main/players/" + str(id)).queue_free()
 
 
 remote func pre_start_game(spawn_points):
 	# Change scene
 	main = load("res://scenes/main.tscn").instance()
 	get_tree().get_root().add_child(main)
-	get_tree().get_root().get_node("main").hide()
+#	get_tree().get_root().get_node("main").hide()
+	main.set_network_master(1)
 
 	get_tree().get_root().get_node("lobby").hide()
 

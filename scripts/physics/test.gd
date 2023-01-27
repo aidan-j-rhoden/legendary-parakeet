@@ -28,7 +28,7 @@ func _ready():
 	whoosh = get_node("audio/whoosh")
 
 
-func _physics_process(delta):
+func _physics_process(_delta):
 	process_stuff()
 
 
@@ -85,8 +85,9 @@ func process_stuff():
 	# Set previous velocity
 	prev_lvl = lvl
 
-#	rpc_unreliable("update_trans_rot", translation, rotation)
-#
-#puppet func update_trans_rot(trans, rot):
-#	translation = trans
-#	rotation = rot
+	rpc_unreliable("update_trans_rot", translation, rotation)
+
+
+puppet func update_trans_rot(trans, rot):
+	translation = trans
+	rotation = rot

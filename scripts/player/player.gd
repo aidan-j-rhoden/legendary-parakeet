@@ -152,8 +152,6 @@ func _ready():
 	ray_ledge_top = get_node("shape/rays/ledge_top")
 	ray_vehicles = get_node("shape/rays/vehicles")
 
-	get_node("timer_respawn").connect("timeout", self, "_on_timer_respawn_timeout")
-
 	if is_network_master():
 		camera.current = true
 		crosshair.visible = true
@@ -233,7 +231,7 @@ func process_input(delta):
 
 		# Enter vehicle
 		if Input.is_action_just_pressed("enter_vehicle"):
-			rpc("enter_vehicle")
+			enter_vehicle()
 
 		# Change weapon
 		if Input.is_action_just_released("next_weapon"):
@@ -427,14 +425,16 @@ remotesync func enter_vehicle():
 			if ray_vehicles.get_collider() is VehicleBody:# and ray_vehicles.get_collider().driver == null:
 				if ray_vehicles.get_collider().name == "truck_auto":
 					vehicle = ray_vehicles.get_collider()
-					vehicle.driver = self
+					vehicle.driver = int(self.name)
 					voice_player.stream = pain_sound #Temp
 					voice_player.play()
 					for player in gamestate.players:
-						rpc_id(player, "enter_vehicle")
+						if player != str(get_tree().get_rpc_sender_id()):
+							rpc_id(player, "enter_vehicle")
 				else:
 					for player in gamestate.players:
-						rpc_id(player, "enter_vehicle")
+						if player != get_tree().get_rpc_sender_id():
+							rpc_id(player, "enter_vehicle")
 					#camera.translation = Vector3(0.5, -0.1, 0.2) #Edit this
 					camera.translation = Vector3(0, 0, 5)
 					vehicle = ray_vehicles.get_collider()
@@ -447,7 +447,7 @@ remotesync func enter_vehicle():
 					else:
 						global_transform.origin = vehicle.transform.origin + vehicle.transform.basis.x * -0.5 + vehicle.transform.basis.y * 1.75
 
-					vehicle.driver = self
+					vehicle.driver = int(self.name)
 #					vehicle.set_network_master(int(self.get_name()))
 					shape.rotation.y = vehicle.get_node("body").transform.basis.get_euler().y
 
@@ -457,7 +457,8 @@ remotesync func enter_vehicle():
 	else:
 		if vehicle.name != "truck_auto":
 			for player in gamestate.players:
-				rpc_id(player, "enter_vehicle")
+				if player != get_tree().get_rpc_sender_id():
+					rpc_id(player, "enter_vehicle")
 			self.remove_collision_exception_with(vehicle)
 			animation_state_machine.travel("blend_tree")
 			get_parent().remove_child(self)
@@ -479,7 +480,8 @@ remotesync func enter_vehicle():
 			vehicle = null
 			is_in_vehicle = false
 			for player in gamestate.players:
-				rpc_id(player, "enter_vehicle")
+				if player != str(get_tree().get_rpc_sender_id()):
+					rpc_id(player, "enter_vehicle")
 
 
 # Animations
@@ -526,8 +528,8 @@ remotesync func update_is_climbing(value):
  
 # Sync position and rotation in the network
 remote func update_trans_rot(pos, rot, shape_rot):
-	var id = str(get_tree().get_rpc_sender_id())
-	if self.get_name() == id:
+	var id = get_tree().get_rpc_sender_id()
+	if self.get_name() == str(id):
 		translation = pos
 		rotation = rot
 		shape.rotation = shape_rot

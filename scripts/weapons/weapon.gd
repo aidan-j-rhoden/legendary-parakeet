@@ -45,7 +45,6 @@ var is_pickable = true
 
 onready var main_scn = get_tree().root.get_child(get_tree().root.get_child_count() - 1)
 
-
 func _ready():
 	set_ammo(MAX_AMMO)
 	set_ammo_supply(MAX_AMMO)
@@ -102,40 +101,43 @@ remotesync func fire():
 		flash.visible = true
 		flash.get_node("light").visible = true
 
-		for i in bullets: # Raycast
-			var from = shooter.camera.global_transform.origin
-			var to = from + (shooter.camera.global_transform.basis.z * -ray_length + random_spread(spread))
-			var space_state = get_world().direct_space_state
-			var result = space_state.intersect_ray(from, to, [self, shooter])
-			if not result.empty():
-				print(result.collider)
-				if result.collider is Player and not result.collider.is_in_vehicle:
-					shooter.get_node("audio/hit").play()
-#					result.collider.rpc("hit", DAMAGE, (result.position - global_transform.origin).normalized() * knockback_multiplier) #Should this line even be here?
-					if result.collider.health <= DAMAGE and not result.collider.is_dead:
-						shooter.kill_count += 2
-					result.collider.rpc("hurt", DAMAGE)
+#		for i in bullets: # Raycast
+#			var from = shooter.camera.global_transform.origin
+#			var to = from + (shooter.camera.global_transform.basis.z * -ray_length + random_spread(spread))
+#			var space_state = get_world().direct_space_state
+#			var result = space_state.intersect_ray(from, to, [self, shooter])
+#			if not result.empty():
+#				print(result.collider)
+#				if result.collider is Player and not result.collider.is_in_vehicle:
+#					shooter.get_node("audio/hit").play()
+##					result.collider.rpc("hit", DAMAGE, (result.position - global_transform.origin).normalized() * knockback_multiplier) #Should this line even be here?
+#					if result.collider.health <= DAMAGE and not result.collider.is_dead:
+#						shooter.kill_count += 2
+#					result.collider.rpc("hurt", DAMAGE)
+##					var position = result.position - result.collider.global_transform.origin
+##					var impulse = (result.position - global_transform.origin).normalized()
+##					result.collider.apply_impulse(position, impulse * knockback_multiplier)
+#					rpc("create_impact", "wound", result, shooter.camera.global_transform.basis.z)
+#				if result.collider is KinematicBody and result.collider.get_parent() is VehicleBody:
+#					rpc("create_impact", "wound", result, shooter.camera.global_transform.basis.z)
+#					if result.collider.health <= DAMAGE and not result.collider.is_dead:
+#						shooter.kill_count += 2
+#					result.collider.rpc("hurt", DAMAGE)
+#				if result.collider is RigidBody and not result.collider is Gibs:
 #					var position = result.position - result.collider.global_transform.origin
 #					var impulse = (result.position - global_transform.origin).normalized()
-#					result.collider.apply_impulse(position, impulse * knockback_multiplier)
-					rpc("create_impact", scn_wound, scn_blood_fx, result, shooter.camera.global_transform.basis.z)
-				if result.collider is KinematicBody and result.collider.get_parent() is VehicleBody:
-					rpc("create_impact", scn_wound, scn_blood_fx, result, shooter.camera.global_transform.basis.z)
-					if result.collider.health <= DAMAGE and not result.collider.is_dead:
-						shooter.kill_count += 2
-					result.collider.rpc("hurt", DAMAGE)
-				if result.collider is RigidBody and not result.collider is Gibs:
-					var position = result.position - result.collider.global_transform.origin
-					var impulse = (result.position - global_transform.origin).normalized()
-					result.collider.apply_impulse(position, impulse * 10)
-					rpc("create_impact", scn_impact, scn_impact_fx, result, shooter.camera.global_transform.basis.z)
-				if result.collider is StaticBody and not result.collider is Gibs:
-					rpc("create_impact", scn_impact, scn_impact_fx, result, shooter.camera.global_transform.basis.z)
-				if result.collider is Gibs:
-					var position = result.position - result.collider.global_transform.origin
-					var impulse = (result.position - global_transform.origin).normalized()
-					result.collider.apply_impulse(position, impulse * 8)
-					rpc("create_impact", scn_wound, scn_blood_fx, result, shooter.camera.global_transform.basis.z)
+#					result.collider.apply_impulse(position, impulse * 10)
+#					rpc("create_impact", "impact", result, shooter.camera.global_transform.basis.z)
+#				if result.collider is StaticBody and not result.collider is Gibs:
+#					rpc("create_impact", "impact", result, shooter.camera.global_transform.basis.z)
+#				if result.collider is Gibs:
+#					var position = result.position - result.collider.global_transform.origin
+#					var impulse = (result.position - global_transform.origin).normalized()
+#					result.collider.apply_impulse(position, impulse * 8)
+#					rpc("create_impact", "wound", result, shooter.camera.global_transform.basis.z)
+		for player in gamestate.players:
+			if player != get_tree().get_rpc_sender_id():
+				rpc_id(player, "fire")
 
 
 # Reloading
@@ -200,24 +202,30 @@ func _on_state_changed(value):
 			get_node("area").monitoring = false
 			get_node("area/collision_shape").disabled = true
 		DROPPED:
+			rpc_unreliable("update_trans", translation)
 			get_node("animation_player").seek(0, true)
 			get_node("animation_player").stop()
 			get_node("area").monitoring = true
 			get_node("area/collision_shape").disabled = false
 
 
+puppetsync func update_trans(trans):
+	translation = trans
+
+
 # Pick up weapon
 remotesync func _on_body_entered(body):
 	shooter = body
-	rpc("pick")
+#	rpc("pick")
 
 
 remotesync func pick():
+	for player in gamestate.players:
+		if player != get_tree().get_rpc_sender_id():
+			rpc_id(player, "pick")
 	if shooter != null:
 		if shooter is Player and !shooter.is_dead and is_pickable:
 			if shooter.equipped_weapon == null:
-				var current_ammo = ammo
-				var current_ammo_supply = ammo_supply
 				is_pickable = false
 				var weapon_container = shooter.get_node("shape/cube/root/skeleton/bone_attachment/weapon")
 				get_parent().remove_child(self)

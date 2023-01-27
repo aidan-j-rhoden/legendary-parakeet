@@ -145,7 +145,7 @@ func _ready():
 	brakes_player = get_node("audio/breaks")
 	air_player = get_node("audio/air")
 	air_player.stream = air_sound
-	
+
 	# Skids
 	skid_scn = preload("res://scenes/misc/skid.tscn")
 
@@ -156,17 +156,13 @@ func _physics_process(delta):
 		turbo_text.add_color_override("font_color", Color(0, 255, 0))
 	else:
 		turbo_text.add_color_override("font_color", Color(255, 165, 0, 255))
-	if driver:
-		pass
-#		if is_network_master():
-#			process_input(delta)
-#		hud.visible = true
-	else:
+	if not driver:
 		throttle_val = 0.0
 		brake_val = 0.2
 		hud.visible = false
 
-	if is_network_master():
+#	if is_network_master():
+	if not driver:
 		rpc("process_other_stuff", delta)
 
 	if turbo_timer.time_left <= 7.8:
@@ -176,7 +172,7 @@ func _physics_process(delta):
 		$self_destruct.start()
 
 
-func process_input(delta):
+func process_input(_delta):
 	steer_val = steering_mult * Input.get_joy_axis(0, joy_steering)
 	#throttle_val = throttle_mult * Input.get_joy_axis(0, joy_throttle)
 	brake_val = brake_mult * Input.get_joy_axis(0, joy_brake)
@@ -236,7 +232,7 @@ func process_input(delta):
 #			tunes_player.play()
 
 
-master func process_other_stuff(delta):
+mastersync func process_other_stuff(delta):
 	steer_target = steer_val * MAX_STEER_ANGLE
 
 	if (steer_target < steer_angle):
@@ -312,11 +308,16 @@ master func process_other_stuff(delta):
 	rpc_unreliable("update_trans_rot", translation, rotation, get_node("body").rotation, driver, engine_force, steer_angle, engine_RPM)
 
 
-remote func update_applied_stuff(drv, en_f, st_angle, en_RPM):
+remote func update_applied_stuff(drv, en_f, st_angle, en_RPM, en_THROT):
 	driver = drv
 	steering = st_angle
 	engine_force = en_f
 	engine_RPM = en_RPM
+	throttle_val = en_THROT
+	var id = get_tree().get_rpc_sender_id()
+	for player in gamestate.players:
+		if player != id:
+			rpc_id(player, "update_trans_rot", translation, rotation, get_node("body").rotation, driver, engine_force, steer_angle, engine_RPM)
 
 
 #puppetsync func update_trans_rot(trans, rot, body_rot, drv, en_f, st_angle, en_RPM):
@@ -352,7 +353,8 @@ func process_sounds():
 		for b in bodies:
 			if b is Player:
 				if driver:
-					driver.kill_count += 1
+					pass
+#					driver.kill_count += 1
 				b.rpc("die")
 
 	if bodies.size() > 0 and abs(prev_lvl - lvl) > 0.5:
