@@ -406,6 +406,10 @@ remotesync func check_weapons():
 		equipped_weapon = weapons[0]
 	else:
 		equipped_weapon = null
+	var id = get_tree().get_rpc_sender_id()
+	for player in gamestate.players:
+		if player != id:
+			rpc_id(player, "check_weapons")
 
 
 remotesync func toggle_weapon():
@@ -416,6 +420,10 @@ remotesync func toggle_weapon():
 		else:
 			weapon_equipped = true
 			get_node("shape/cube/root/skeleton/bone_attachment/weapon").visible = true
+		var id = get_tree().get_rpc_sender_id()
+		for player in gamestate.players:
+			if player != id:
+				rpc_id(player, "check_weapons")
 
 
 # Entering vehicle
