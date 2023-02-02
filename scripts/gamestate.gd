@@ -91,9 +91,9 @@ remote func pre_start_game(spawn_points):
 
 		player.set_name(str(p_id)) # Use unique ID as node name
 		player.set_network_master(p_id) #set unique id as master
-		player.global_transform.origin = spawn_pos
 
 		main.get_node("players").add_child(player)
+		player.global_transform.origin = spawn_pos
 
 	if players.size() == 0:
 		post_start_game()
