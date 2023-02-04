@@ -51,7 +51,6 @@ func _ready():
 
 	connect("ammo_changed", self, "_on_ammo_changed")
 	connect("state_changed", self, "_on_state_changed")
-	get_node("area").connect("body_entered", self, "_on_body_entered")
 
 
 func _physics_process(delta):
@@ -214,7 +213,7 @@ puppetsync func update_trans(trans):
 
 
 # Pick up weapon
-remotesync func _on_body_entered(body):
+func _on_area_body_entered(body):
 	shooter = body
 #	rpc("pick")
 
@@ -244,23 +243,34 @@ remotesync func pick():
 				shooter.weapon_equipped = true
 				weapon_copy.set_ammo(ammo)
 				weapon_copy.set_ammo_supply(ammo_supply)
-				if shooter.is_network_master():
-					weapon_copy.get_node("hud/ammo").visible = true
-					weapon_copy.get_node("audio/ammo").play()
+#				if shooter.is_network_master():
+#					weapon_copy.get_node("hud").visible = true
+#					weapon_copy.get_node("audio/ammo").play()
 				queue_free()
 
 
 # Drop weapon
-remotesync func drop():
+remotesync func drop(trans = null):
 	is_reloading = false
 	var current_ammo = ammo
 	var current_ammo_supply = ammo_supply
+	var id = get_tree().get_rpc_sender_id()
+	for player in gamestate.players:
+		if player != id:
+			if trans:
+				rpc_id(player, "drop", trans)
+			else:
+				rpc_id(player, "drop", shooter.global_transform.origin + shooter.shape_orientation.basis.z * 3.0)
 	get_parent().remove_child(self)
 	main_scn.get_node("weapons").add_child(self)
-	self.global_transform.origin = shooter.global_transform.origin + shooter.shape_orientation.basis.z * 3.0
+	if not trans:
+		self.global_transform.origin = shooter.global_transform.origin + shooter.shape_orientation.basis.z * 3.0
+	else:
+		self.global_transform.origin = trans
+	rpc("update_trans", self.global_transform.origin)
 	set_ammo(current_ammo)
 	set_ammo_supply(current_ammo_supply)
-	get_node("hud/ammo").visible = false
+	get_node("hud").visible = false
 	shooter.equipped_weapon = null
 	shooter.weapon_equipped = false
 	shooter = null
