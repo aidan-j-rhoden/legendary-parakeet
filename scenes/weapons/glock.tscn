@@ -175,9 +175,9 @@ stream = ExtResource( 8 )
 stream = ExtResource( 10 )
 
 [node name="hud" type="CanvasLayer" parent="."]
+visible = false
 
 [node name="ammo" type="Label" parent="hud"]
-visible = false
 anchor_left = 1.0
 anchor_top = 1.0
 anchor_right = 1.0
@@ -190,3 +190,5 @@ text = "AMMO: 16/16"
 __meta__ = {
 "_edit_use_anchors_": false
 }
+
+[connection signal="body_entered" from="area" to="." method="_on_area_body_entered"]
