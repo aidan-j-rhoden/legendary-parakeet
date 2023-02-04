@@ -1,6 +1,6 @@
 extends VehicleBody
 
-var driver
+var driver: int = -1
 
 # Behaviour values
 export var MAX_ENGINE_FORCE = 200
@@ -156,14 +156,18 @@ func _physics_process(delta):
 		turbo_text.add_color_override("font_color", Color(0, 255, 0))
 	else:
 		turbo_text.add_color_override("font_color", Color(255, 165, 0, 255))
-	if not driver:
+	if driver == -1:
 		throttle_val = 0.0
 		brake_val = 0.2
 		hud.visible = false
 
 #	if is_network_master():
-	if not driver:
+	if driver == -1:
 		rpc("process_other_stuff", delta)
+	else:
+		for player in gamestate.players:
+			if player != driver:
+				rpc_id(player, "update_trans_rot", translation, rotation, get_node("body").rotation, driver, engine_force, steer_angle, engine_RPM)
 
 	if turbo_timer.time_left <= 7.8:
 		turbo_active = false
@@ -315,9 +319,9 @@ remote func update_applied_stuff(drv, en_f, st_angle, en_RPM, en_THROT):
 	engine_RPM = en_RPM
 	throttle_val = en_THROT
 	var id = get_tree().get_rpc_sender_id()
-	for player in gamestate.players:
-		if player != id:
-			rpc_id(player, "update_trans_rot", translation, rotation, get_node("body").rotation, driver, engine_force, steer_angle, engine_RPM)
+#	for player in gamestate.players:
+#		if player != id:
+#			rpc_id(player, "update_trans_rot", translation, rotation, get_node("body").rotation, driver, engine_force, steer_angle, engine_RPM)
 
 
 #puppetsync func update_trans_rot(trans, rot, body_rot, drv, en_f, st_angle, en_RPM):
@@ -352,7 +356,7 @@ func process_sounds():
 	if bodies.size() > 0 and abs(prev_lvl - lvl) > 5:
 		for b in bodies:
 			if b is Player:
-				if driver:
+				if driver != -1:
 					pass
 #					driver.kill_count += 1
 				b.rpc("die")

@@ -430,7 +430,7 @@ remotesync func toggle_weapon():
 remotesync func enter_vehicle():
 	if !is_in_vehicle:
 		if ray_vehicles.is_colliding():
-			if ray_vehicles.get_collider() is VehicleBody:# and ray_vehicles.get_collider().driver == null:
+			if ray_vehicles.get_collider() is VehicleBody and ray_vehicles.get_collider().driver == -1:
 				if ray_vehicles.get_collider().name == "truck_auto":
 					vehicle = ray_vehicles.get_collider()
 					vehicle.driver = int(self.name)
@@ -450,10 +450,7 @@ remotesync func enter_vehicle():
 					vehicle.add_child(self)
 					self.add_collision_exception_with(vehicle)
 
-					if vehicle.driver == null:
-						global_transform.origin = vehicle.transform.origin + vehicle.transform.basis.x * 0.5 + vehicle.transform.basis.y * 1.75
-					else:
-						global_transform.origin = vehicle.transform.origin + vehicle.transform.basis.x * -0.5 + vehicle.transform.basis.y * 1.75
+					global_transform.origin = vehicle.transform.origin + vehicle.transform.basis.x * 0.5 + vehicle.transform.basis.y * 1.75
 
 					vehicle.driver = int(self.name)
 #					vehicle.set_network_master(int(self.get_name()))
@@ -494,6 +491,10 @@ remotesync func enter_vehicle():
 
 # Animations
 remotesync func process_animations(is_in_vehicle, is_grounded, is_climbing, is_dancing, is_aiming, pistol_equipped, hvel_length, camera_x_rot, camera_y_rot):
+	var id = get_tree().get_rpc_sender_id()
+	for player in gamestate.players:
+		if id != player:
+			rpc_id(player, "process_animations", is_in_vehicle, is_grounded, is_climbing, is_dancing, is_aiming, pistol_equipped, hvel_length, camera_x_rot, camera_y_rot)
 	if is_in_vehicle:
 		animation_state_machine.travel("car_drive")
 	else:
@@ -537,10 +538,13 @@ remotesync func update_is_climbing(value):
 # Sync position and rotation in the network
 remote func update_trans_rot(pos, rot, shape_rot):
 	var id = get_tree().get_rpc_sender_id()
-	if self.get_name() == str(id):
-		translation = pos
-		rotation = rot
-		shape.rotation = shape_rot
+#	if self.get_name() == str(id):
+#		translation = pos
+#		rotation = rot
+#		shape.rotation = shape_rot
+	translation = pos
+	rotation = rot
+	shape.rotation = shape_rot
 	for player in gamestate.players:
 		if player != id:
 			rpc_unreliable_id(player, "update_trans_rot", translation, rotation, shape.rotation)
