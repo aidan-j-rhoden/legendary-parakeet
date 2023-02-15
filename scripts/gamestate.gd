@@ -5,6 +5,7 @@ const DEFAULT_PORT = 27015
 
 # Max number of players
 const MAX_PEERS = 4
+var host: NetworkedMultiplayerENet
 
 # Names for remote players in id:name format
 var players = {}
@@ -120,7 +121,7 @@ master func ready_to_start(id):
 
 
 func host_game():
-	var host = NetworkedMultiplayerENet.new()
+	host = NetworkedMultiplayerENet.new()
 	host.create_server(DEFAULT_PORT, MAX_PEERS)
 	get_tree().set_network_peer(host)
 
@@ -146,7 +147,10 @@ func begin_game():
 
 
 func end_game():
+#	host.close_connection() # FIX ME
 #	get_tree().set_network_peer(null) # Causes problems, but it seems necessary
+# If this is done, it causes a fatal crash on my Mac, but if I leave the 2 above lines
+# commented out, the project fails to create a new server.
 	if has_node("/root/main"): # Game is in progress
 		# End it
 		get_node("/root/main").queue_free()
