@@ -151,6 +151,7 @@ func _ready():
 
 
 func _physics_process(delta):
+	print(driver)
 	turbo_text.text = ("Turbo: " + str(("%1.2f" % turbo_timer.time_left)))
 	if turbo_timer.time_left == 0.0:
 		turbo_text.add_color_override("font_color", Color(0, 255, 0))
@@ -399,6 +400,10 @@ func shift_gears():
 				appropriate_gear = j
 				break
 		current_gear = appropriate_gear
+
+
+func set_driver(drv):
+	driver = drv
 
 
 func get_speed_kph():

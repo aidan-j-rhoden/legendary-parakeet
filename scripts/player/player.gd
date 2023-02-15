@@ -167,7 +167,7 @@ func _physics_process(delta):
 	health_bar.value = health
 	kill_counter.text = str(kill_count)
 	game_timer_label.text = get_time_left()
-	if is_network_master():
+	if is_network_master(): # None of this block runs (for future un-caffinated me)
 		if not is_dead:
 			process_input(delta)
 		if !is_in_vehicle and not is_dead:
@@ -433,7 +433,7 @@ remotesync func enter_vehicle():
 			if ray_vehicles.get_collider() is VehicleBody and ray_vehicles.get_collider().driver == -1:
 				if ray_vehicles.get_collider().name == "truck_auto":
 					vehicle = ray_vehicles.get_collider()
-					vehicle.driver = int(self.name)
+					vehicle.set_driver(get_network_master())
 					voice_player.stream = pain_sound #Temp
 					voice_player.play()
 					for player in gamestate.players:
@@ -452,7 +452,7 @@ remotesync func enter_vehicle():
 
 					global_transform.origin = vehicle.transform.origin + vehicle.transform.basis.x * 0.5 + vehicle.transform.basis.y * 1.75
 
-					vehicle.driver = int(self.name)
+					vehicle.set_driver(get_network_master())
 #					vehicle.set_network_master(int(self.get_name()))
 					shape.rotation.y = vehicle.get_node("body").transform.basis.get_euler().y
 
@@ -475,17 +475,17 @@ remotesync func enter_vehicle():
 
 			vel = vehicle.linear_velocity * 1.5
 
-			vehicle.driver = null
+			vehicle.driver = -1
 			vehicle = null
 			is_in_vehicle = false
 			# Temporary
 			camera.clip_to_bodies = true
 		else:
-			vehicle.driver = null
+			vehicle.driver = -1
 			vehicle = null
 			is_in_vehicle = false
 			for player in gamestate.players:
-				if player != str(get_tree().get_rpc_sender_id()):
+				if player != get_tree().get_rpc_sender_id():
 					rpc_id(player, "enter_vehicle")
 
 
